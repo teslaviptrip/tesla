@@ -2,6 +2,8 @@
 
 A modern React application for Tesla VIP Trip, offering premium luxury electric car transfer services in Vienna, Bratislava, and Budapest.
 
+**Latest Update:** Security improvements and API endpoint integration (Jan 2026)
+
 ## Technologies
 
 This project is built with:

@@ -308,7 +308,7 @@ export const translations: Record<Language, Translations> = {
     contact: {
       title: "Book Your",
       titleHighlight: "Tesla Transfer",
-      description: "Contact us now and let's arrange your Tesla transfer.",
+      description: "Contact us now and let's arrange your Tesla transfer",
       getInTouch: "Get in Touch",
       emailUs: "Email Us",
       email: "teslaservis149@gmail.com",

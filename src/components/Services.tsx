@@ -114,7 +114,7 @@ const Services = () => {
               Services
             </span>
           </h2>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+          <p className="hidden md:block text-xl text-muted-foreground max-w-2xl mx-auto">
             Experience luxury transportation with our comprehensive Tesla transfer services
           </p>
         </div>

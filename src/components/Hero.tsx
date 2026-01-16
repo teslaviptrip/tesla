@@ -21,7 +21,7 @@ const Hero = () => {
       <div className="relative z-10 container mx-auto px-6 text-center">
         <div className="max-w-4xl mx-auto">
           {/* Badge */}
-          <div className="inline-flex items-center px-4 py-2 rounded-full luxury-card mb-8">
+          <div className="hidden md:inline-flex items-center px-4 py-2 rounded-full luxury-card mb-8">
             <Star className="w-4 h-4 text-primary mr-2" />
             <span className="text-sm text-foreground">Premium Tesla Transfer Service</span>
           </div>
@@ -35,7 +35,7 @@ const Hero = () => {
           </h1>
 
           {/* Subheading */}
-          <p className="text-xl md:text-2xl text-muted-foreground mb-12 max-w-2xl mx-auto leading-relaxed">
+          <p className="hidden md:block text-xl md:text-2xl text-muted-foreground mb-12 max-w-2xl mx-auto leading-relaxed">
             Experience the future of premium transportation with our fleet of luxury Tesla vehicles. 
             Sustainable, silent, and sophisticated.
           </p>

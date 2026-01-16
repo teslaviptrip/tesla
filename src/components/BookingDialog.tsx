@@ -232,11 +232,23 @@ const BookingDialog = ({ open, onOpenChange, defaultService }: BookingDialogProp
   };
 
   const handleServiceSelect = (serviceId: string) => {
+    const service = services.find(s => s.id === serviceId);
     setFormData(prev => ({
       ...prev,
       service: serviceId,
       serviceOption: ''
     }));
+    
+    // Auto-advance to next step
+    if (service) {
+      if (service.options.length === 0) {
+        // Skip to step 3 if no options
+        setTimeout(() => setCurrentStep(3), 300);
+      } else {
+        // Go to step 2 if has options
+        setTimeout(() => setCurrentStep(2), 300);
+      }
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -398,7 +410,11 @@ Submitted: ${new Date().toLocaleString()}
                         ? "ring-2 ring-primary bg-primary/10 border-primary" 
                         : "hover:border-primary/50"
                     )}
-                    onClick={() => setFormData(prev => ({ ...prev, serviceOption: option.label }))}
+                    onClick={() => {
+                      setFormData(prev => ({ ...prev, serviceOption: option.label }));
+                      // Auto-advance to next step
+                      setTimeout(() => setCurrentStep(3), 300);
+                    }}
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex-1">
@@ -713,27 +729,33 @@ Submitted: ${new Date().toLocaleString()}
 
         {/* Footer with Navigation */}
         <div className="px-6 py-4 border-t bg-muted/30 flex items-center justify-between">
-          <Button
-            type="button"
-            variant="ghost"
-            onClick={handleBack}
-            disabled={currentStep === 1}
-            className="flex items-center gap-2"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            Back
-          </Button>
+          {currentStep > 1 ? (
+            <Button
+              type="button"
+              variant="ghost"
+              onClick={handleBack}
+              className="flex items-center gap-2"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              Back
+            </Button>
+          ) : (
+            <div></div>
+          )}
           <div className="flex gap-3">
             {currentStep < totalSteps ? (
-              <Button
-                type="button"
-                onClick={handleNext}
-                disabled={!canProceed()}
-                className="electric-glow hover-glow flex items-center gap-2"
-              >
-                Continue
-                <ArrowRight className="w-4 h-4" />
-              </Button>
+              // Hide Continue button on steps 1 and 2 (auto-advance)
+              (currentStep === 1 || currentStep === 2) ? null : (
+                <Button
+                  type="button"
+                  onClick={handleNext}
+                  disabled={!canProceed()}
+                  className="electric-glow hover-glow flex items-center gap-2"
+                >
+                  Continue
+                  <ArrowRight className="w-4 h-4" />
+                </Button>
+              )
             ) : (
               <Button
                 type="submit"

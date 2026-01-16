@@ -1,7 +1,7 @@
 import { Resend } from 'resend';
 
 // Booking email handler with security features
-const resend = new Resend(process.env.RESEND_API_KEY || 're_Cmf2uRXx_6zyqGA1DBx1kAPUzx8z1Zc7a');
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 // Rate limiting storage (in production, use Redis or similar)
 const rateLimitMap = new Map<string, { count: number; resetTime: number }>();

@@ -328,7 +328,7 @@ export const translations: Record<Language, Translations> = {
     faq: {
       title: "Frequently Asked",
       titleHighlight: "Questions",
-      description: "Find answers to common questions about our premium Tesla chauffeur service.",
+      description: "Find answers to common questions about our premium Tesla chauffeur service",
       items: [
         {
           question: "What areas do you serve?",

@@ -51,25 +51,25 @@ export default async function handler(req: any, res: any) {
     // Send booking notification to admin emails
     const bookingDetailsHtml = `
       <div style="font-family: Arial, sans-serif; line-height: 1.6;">
-        <h3>${ookingData.ookingDetails}</h3>
-        <p><strong>${ookingData.service}:</strong> ${ookingData.service}</p>
-        <p><strong>${ookingData.option}:</strong> ${ookingData.option || ookingData.optional}</p>
-        <h4>${ookingData.tripDetails}:</h4>
+        <h3>${bookingData.bookingDetails}</h3>
+        <p><strong>${bookingData.service}:</strong> ${bookingData.service}</p>
+        <p><strong>${bookingData.option}:</strong> ${bookingData.option || bookingData.optional}</p>
+        <h4>${bookingData.tripDetails}:</h4>
         <ul>
-          <li>${ookingData.pickup}: ${ookingData.pickupLocation}</li>
-          <li>${ookingData.destination}: ${ookingData.destination}</li>
-          <li>${ookingData.date}: ${ookingData.date}</li>
-          <li>${ookingData.time}: ${ookingData.time}</li>
-          <li>${ookingData.passengers}: ${ookingData.passengers}</li>
+          <li>${bookingData.pickup}: ${bookingData.pickupLocation}</li>
+          <li>${bookingData.destination}: ${bookingData.destination}</li>
+          <li>${bookingData.date}: ${bookingData.date}</li>
+          <li>${bookingData.time}: ${bookingData.time}</li>
+          <li>${bookingData.passengers}: ${bookingData.passengers}</li>
         </ul>
-        <h4>${ookingData.contact}:</h4>
+        <h4>${bookingData.contact}:</h4>
         <ul>
-          <li>${ookingData.name}: ${ookingData.name}</li>
-          <li>${ookingData.email}: ${ookingData.email}</li>
-          <li>${ookingData.phone}: ${ookingData.phone}</li>
+          <li>${bookingData.name}: ${bookingData.name}</li>
+          <li>${bookingData.email}: ${bookingData.email}</li>
+          <li>${bookingData.phone}: ${bookingData.phone}</li>
         </ul>
-        <p><strong>${ookingData.message}:</strong><br>${ookingData.message || ookingData.optional}</p>
-        <p style="margin-top: 20px;"><em>${ookingData.footer}</em></p>
+        <p><strong>${bookingData.message}:</strong><br>${bookingData.message || bookingData.optional}</p>
+        <p style="margin-top: 20px;"><em>${bookingData.footer}</em></p>
       </div>
     `;
 
@@ -77,13 +77,13 @@ export default async function handler(req: any, res: any) {
       await resend.emails.send({
         from: 'Tesla VIP Trip <onboarding@resend.dev>',
         to: adminEmail,
-        subject: `${ookingData.subject} - ${ookingData.name}`,
+        subject: `${bookingData.subject} - ${bookingData.name}`,
         html: `
           <html>
             <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
               <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
-                <h2 style="color: #fbbf24;">${ookingData.greeting}</h2>
-                ${ookingDetailsHtml}
+                <h2 style="color: #fbbf24;">${bookingData.greeting}</h2>
+                ${bookingDetailsHtml}
               </div>
             </body>
           </html>

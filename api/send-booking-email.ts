@@ -188,23 +188,23 @@ export default async function handler(req: any, res: any) {
     const bookingDetailsHtml = `
       <div style="font-family: Arial, sans-serif; line-height: 1.6;">
         <h3>${sanitizedBookingData.bookingDetails || 'Booking Details'}</h3>
-        <p><strong>${sanitizedBookingData.service || 'Service'}:</strong> ${sanitizedBookingData.service}</p>
-        ${sanitizedBookingData.serviceOption ? `<p><strong>${sanitizedBookingData.option || 'Option'}:</strong> ${sanitizedBookingData.serviceOption}</p>` : ''}
+        <p><strong>${sanitizedBookingData.serviceLabel || 'Service'}:</strong> ${sanitizedBookingData.service}</p>
+        ${sanitizedBookingData.serviceOption ? `<p><strong>${sanitizedBookingData.optionLabel || 'Option'}:</strong> ${sanitizedBookingData.serviceOption}</p>` : ''}
         <h4>${sanitizedBookingData.tripDetails || 'Trip Details'}:</h4>
         <ul>
-          <li>${sanitizedBookingData.pickup || 'Pickup'}: ${sanitizedBookingData.pickupLocation}</li>
-          <li>${sanitizedBookingData.destination || 'Destination'}: ${sanitizedBookingData.destination}</li>
-          <li>${sanitizedBookingData.date || 'Date'}: ${sanitizedBookingData.date}</li>
-          <li>${sanitizedBookingData.time || 'Time'}: ${sanitizedBookingData.time}</li>
-          <li>${sanitizedBookingData.passengers || 'Passengers'}: ${sanitizedBookingData.passengers}</li>
+          <li>${sanitizedBookingData.pickupLabel || 'Pickup'}: ${sanitizedBookingData.pickupLocation}</li>
+          <li>${sanitizedBookingData.destinationLabel || 'Destination'}: ${sanitizedBookingData.destination}</li>
+          <li>${sanitizedBookingData.dateLabel || 'Date'}: ${sanitizedBookingData.date}</li>
+          <li>${sanitizedBookingData.timeLabel || 'Time'}: ${sanitizedBookingData.time}</li>
+          <li>${sanitizedBookingData.passengersLabel || 'Passengers'}: ${sanitizedBookingData.passengers}</li>
         </ul>
         <h4>${sanitizedBookingData.contact || 'Contact Information'}:</h4>
         <ul>
-          <li>${sanitizedBookingData.name || 'Name'}: ${sanitizedBookingData.name}</li>
-          <li>${sanitizedBookingData.email || 'Email'}: ${sanitizedBookingData.email}</li>
-          <li>${sanitizedBookingData.phone || 'Phone'}: ${sanitizedBookingData.phone}</li>
+          <li>${sanitizedBookingData.nameLabel || 'Name'}: ${sanitizedBookingData.name}</li>
+          <li>${sanitizedBookingData.emailLabel || 'Email'}: ${sanitizedBookingData.email}</li>
+          <li>${sanitizedBookingData.phoneLabel || 'Phone'}: ${sanitizedBookingData.phone}</li>
         </ul>
-        ${sanitizedBookingData.message ? `<p><strong>${sanitizedBookingData.message || 'Message'}:</strong><br>${sanitizedBookingData.message}</p>` : ''}
+        ${sanitizedBookingData.message ? `<p><strong>${sanitizedBookingData.messageLabel || 'Message'}:</strong><br>${sanitizedBookingData.message}</p>` : ''}
         <p style="margin-top: 20px;"><em>${sanitizedBookingData.footer || 'Please contact the customer to confirm the booking.'}</em></p>
       </div>
     `;
@@ -234,4 +234,3 @@ export default async function handler(req: any, res: any) {
     return res.status(500).json({ error: 'Failed to send email. Please try again later.' });
   }
 }
-Fri Jan 16 15:48:12 CET 2026

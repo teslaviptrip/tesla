@@ -311,6 +311,7 @@ ${t.booking.email.footer}
     try {
       // Prepare booking data for API
       const bookingData = {
+        // Actual booking data
         name: formData.name.trim(),
         email: formData.email.trim().toLowerCase(),
         phone: formData.phone.trim(),
@@ -322,21 +323,21 @@ ${t.booking.email.footer}
         time: formData.time,
         passengers: formData.passengers,
         message: formData.message.trim(),
-        // Translation keys for email
+        // Translation keys for email (with different names to avoid duplicates)
         bookingDetails: t.ooking.email.ookingDetails,
-        service: t.ooking.email.service,
-        option: t.ooking.email.option,
+        serviceLabel: t.ooking.email.service,
+        optionLabel: t.ooking.email.option,
         tripDetails: t.ooking.review.tripDetails,
-        pickup: t.ooking.email.pickup,
-        destination: t.ooking.email.destination,
-        date: t.ooking.email.date,
-        time: t.ooking.email.time,
-        passengers: t.ooking.email.passengers,
+        pickupLabel: t.ooking.email.pickup,
+        destinationLabel: t.ooking.email.destination,
+        dateLabel: t.ooking.email.date,
+        timeLabel: t.ooking.email.time,
+        passengersLabel: t.ooking.email.passengers,
         contact: t.ooking.email.contact,
-        name: t.ooking.email.name,
-        email: t.ooking.email.email,
-        phone: t.ooking.email.phone,
-        message: t.ooking.email.message,
+        nameLabel: t.ooking.email.name,
+        emailLabel: t.ooking.email.email,
+        phoneLabel: t.ooking.email.phone,
+        messageLabel: t.ooking.email.message,
         footer: t.ooking.email.footer,
         subject: t.ooking.email.subject,
         greeting: t.ooking.email.greeting,

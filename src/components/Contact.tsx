@@ -1,31 +1,33 @@
 import { Mail, MapPin, Clock } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const Contact = () => {
+  const { t } = useLanguage();
 
   const contactInfo = [
     {
       icon: Mail,
-      title: "Email Us",
-      details: "teslaservis149@gmail.com",
-      description: "Quick response guaranteed"
+      title: t.contact.emailUs,
+      details: t.contact.email,
+      description: t.contact.emailDesc
     },
     {
       icon: MapPin,
-      title: "Service Area",
-      details: "Vienna - Bratislava - Budapest",
-      description: "Austria, Slovakia & beyond"
+      title: t.contact.serviceArea,
+      details: t.contact.serviceAreaDetails,
+      description: t.contact.serviceAreaDesc
     },
     {
       icon: Clock,
-      title: "Operating Hours",
-      details: "24/7 Available",
-      description: "Round-the-clock service"
+      title: t.contact.operatingHours,
+      details: t.contact.hours,
+      description: t.contact.hoursDesc
     },
     {
       icon: Clock,
-      title: "15-Minute Response",
+      title: t.contact.response15min,
       details: "Guaranteed",
-      description: "We guarantee to respond to your booking request within 15 minutes, 24/7. Your premium Tesla transfer is just moments away."
+      description: t.contact.responseDesc
     }
   ];
 
@@ -35,13 +37,13 @@ const Contact = () => {
         {/* Header */}
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
-            Book Your
+            {t.contact.title}
             <span className="block bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
-              Tesla Transfer
+              {t.contact.titleHighlight}
             </span>
           </h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Ready for a premium experience? Contact us now and let's arrange your luxury Tesla transfer.
+            {t.contact.description}
           </p>
         </div>
 
@@ -49,7 +51,7 @@ const Contact = () => {
           {/* Contact Information */}
           <div className="space-y-6">
             <div className="luxury-card p-8">
-              <h3 className="text-2xl font-bold text-foreground mb-6">Get in Touch</h3>
+              <h3 className="text-2xl font-bold text-foreground mb-6 text-center">{t.contact.getInTouch}</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 {contactInfo.map((item, index) => (
                   <div key={index} className="text-center">
@@ -69,15 +71,15 @@ const Contact = () => {
               <div className="grid grid-cols-3 gap-4 text-center">
                 <div>
                   <div className="text-2xl font-bold text-primary mb-1">24/7</div>
-                  <div className="text-xs text-muted-foreground">Available</div>
+                  <div className="text-xs text-muted-foreground">{t.contact.available247}</div>
                 </div>
                 <div>
                   <div className="text-2xl font-bold text-primary mb-1">100%</div>
-                  <div className="text-xs text-muted-foreground">Insured</div>
+                  <div className="text-xs text-muted-foreground">{t.contact.insured}</div>
                 </div>
                 <div>
                   <div className="text-2xl font-bold text-primary mb-1">5★</div>
-                  <div className="text-xs text-muted-foreground">Rating</div>
+                  <div className="text-xs text-muted-foreground">{t.contact.rating}</div>
                 </div>
               </div>
             </div>

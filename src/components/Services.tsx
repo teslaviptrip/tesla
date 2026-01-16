@@ -1,6 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Check } from "lucide-react";
 import { useBooking } from "@/contexts/BookingContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 import serviceAirport from "@/assets/service-airport.jpg";
 import serviceTwoCities from "@/assets/service-two-cities.jpg";
 import serviceTours from "@/assets/service-tours.jpg";
@@ -9,97 +10,65 @@ import serviceEco from "@/assets/service-eco.jpg";
 
 const Services = () => {
   const { openBookingDialog } = useBooking();
+  const { t } = useLanguage();
 
   // Map service titles to booking service IDs
   const getServiceId = (title: string): string => {
     const mapping: Record<string, string> = {
-      "Airport Transfer Service": "airport",
-      "Vienna-Bratislava Day": "vienna-bratislava",
-      "Private Day Tours by Tesla": "day-tours",
-      "Executive Business Transfer": "business",
-      "Sustainable Luxury Mobility": "eco-luxury"
+      [t.services.airport.title]: "airport",
+      [t.services.viennaBratislava.title]: "vienna-bratislava",
+      [t.services.dayTours.title]: "day-tours",
+      [t.services.business.title]: "business",
+      [t.services.ecoLuxury.title]: "eco-luxury"
     };
     return mapping[title] || "";
   };
+  
   const services = [
     {
       image: serviceAirport,
-      title: "Airport Transfer Service",
-      headline: "Arrive in Style, Leave the Stress Behind",
-      description: "Flying into Vienna or Bratislava? Skip the taxi queues. A professional driver in a Tesla will meet you at arrivals and transport you to your hotel in comfort.",
-      features: [
-        "Meet & Greet with nameplate"
-      ],
-      pricing: [
-        { route: "Vienna Airport → Bratislava Airport", price: "from €120" },
-        { route: "Vienna City → Bratislava City", price: "from €140" },
-        { route: "Budapest Airport → Bratislava Airport", price: "from €250" },
-        { route: "Budapest Airport → Vienna Airport", price: "from €280" }
-      ],
-      cta: "Book Your Transfer"
+      title: t.services.airport.title,
+      headline: t.services.airport.headline,
+      description: t.services.airport.description,
+      features: t.services.airport.features,
+      pricing: t.services.airport.pricing,
+      cta: t.services.airport.cta
     },
     {
       image: serviceTwoCities,
-      title: "Vienna-Bratislava Day",
-      headline: "TWO EUROPEAN CAPITALS IN 1 UNFORGETTABLE DAY",
-      description: "Morning stroll through Vienna's imperial streets, evening dinner in Bratislava's Old Town. With your personal Tesla chauffeur, it's effortless.",
-      features: [
-        "Personal driver for the entire day",
-        "Flexible stops at your request",
-        "Local recommendations included"
-      ],
-      pricing: [
-        { route: "Half day experience (5 hours)", price: "from €150" },
-        { route: "Full day service (up to 10 hours)", price: "from €250" }
-      ],
-      cta: "Plan Your Day Trip"
+      title: t.services.viennaBratislava.title,
+      headline: t.services.viennaBratislava.headline,
+      description: t.services.viennaBratislava.description,
+      features: t.services.viennaBratislava.features,
+      pricing: t.services.viennaBratislava.pricing,
+      cta: t.services.viennaBratislava.cta
     },
     {
       image: serviceTours,
-      title: "Private Day Tours by Tesla",
-      headline: "EXPLORE WITHOUT THE TOUR BUS CROWDS",
-      description: "Experience Central Europe your way—in the comfort and silence of a Tesla, with a knowledgeable driver as your guide.",
-      features: [
-        "🍷 Lower Austria Wine Region",
-        "🏰 Slovak Castles & Palaces",
-        "🌇 Prague or Budapest (1-2 days)"
-      ],
-      pricing: [
-        { route: "Half day tour (up to 6 hours)", price: "from €250" },
-        { route: "Full day tour (8-10 hours)", price: "from €400" }
-      ],
-      cta: "Design Your Tour"
+      title: t.services.dayTours.title,
+      headline: t.services.dayTours.headline,
+      description: t.services.dayTours.description,
+      features: t.services.dayTours.features,
+      pricing: t.services.dayTours.pricing,
+      cta: t.services.dayTours.cta
     },
     {
       image: serviceBusiness,
-      title: "Executive Business Transfer",
-      headline: "SUCCESS STARTS WITH THE DETAILS",
-      description: "For business meetings, conferences, and corporate events in Vienna and Bratislava. Professional, discreet, always on time.",
-      features: [
-        "Punctuality guaranteed",
-        "Discreet, professional drivers",
-        "Premium comfort & quiet cabin for calls"
-      ],
-      pricing: [
-        { route: "Hourly business transfer", price: "from €80/hour" },
-        { route: "Corporate packages", price: "Custom quotes" }
-      ],
-      cta: "Request Business Quote"
+      title: t.services.business.title,
+      headline: t.services.business.headline,
+      description: t.services.business.description,
+      features: t.services.business.features,
+      pricing: t.services.business.pricing,
+      cta: t.services.business.cta
     },
     {
       image: serviceEco,
-      title: "Sustainable Luxury Mobility",
-      headline: "Travel in Comfort. Zero Emissions. Pure Style.",
-      description: "Experience premium transportation that doesn't compromise the planet. Tesla chauffeur service combines luxury with environmental responsibility.",
-      features: [
-        "🌍 100% electric, zero CO₂ emissions",
-        "🔇 Whisper-quiet cabin",
-        "⚡ Cutting-edge technology"
-      ],
-      pricing: [
-        { route: "Custom packages", price: "Contact for pricing" }
-      ],
-      cta: "Go Green in Style"
+      title: t.services.ecoLuxury.title,
+      headline: t.services.ecoLuxury.headline,
+      description: t.services.ecoLuxury.description,
+      features: t.services.ecoLuxury.features,
+      pricing: t.services.ecoLuxury.pricing,
+      cta: t.services.ecoLuxury.cta
     }
   ];
 
@@ -109,13 +78,13 @@ const Services = () => {
         {/* Header */}
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
-            Premium Tesla
+            {t.services.title}
             <span className="block bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
-              Services
+              {t.services.titleHighlight}
             </span>
           </h2>
           <p className="hidden md:block text-xl text-muted-foreground max-w-2xl mx-auto">
-            Experience luxury transportation with our comprehensive Tesla transfer services
+            {t.services.description}
           </p>
         </div>
 

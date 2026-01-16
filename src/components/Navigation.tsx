@@ -13,7 +13,7 @@ import { useBooking } from "@/contexts/BookingContext";
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const { language, setLanguage } = useLanguage();
+  const { language, setLanguage, t } = useLanguage();
   const { openBookingDialog } = useBooking();
 
   const languageNames: Record<Language, string> = {
@@ -49,19 +49,19 @@ const Navigation = () => {
               onClick={() => scrollToSection('home')}
               className="text-foreground hover:text-primary transition-fast"
             >
-              Home
+              {t.nav.home}
             </button>
             <button 
               onClick={() => scrollToSection('services')}
               className="text-foreground hover:text-primary transition-fast"
             >
-              Services
+              {t.nav.services}
             </button>
             <button 
               onClick={() => scrollToSection('contact')}
               className="text-foreground hover:text-primary transition-fast"
             >
-              Contact
+              {t.nav.contact}
             </button>
             
             {/* Language Switcher */}
@@ -84,17 +84,18 @@ const Navigation = () => {
               className="electric-glow hover-glow"
               onClick={() => openBookingDialog()}
             >
-              Book Now
+              {t.nav.bookNow}
             </Button>
           </div>
 
           {/* Mobile Menu Button and Book Now */}
           <div className="md:hidden flex items-center gap-2">
             <Button 
-              className="electric-glow hover-glow"
+              size="sm"
+              className="electric-glow hover-glow text-xs px-3 py-1.5 h-8"
               onClick={() => openBookingDialog()}
             >
-              Book Now
+              {t.nav.bookNow}
             </Button>
             <Button
               variant="ghost"
@@ -113,19 +114,19 @@ const Navigation = () => {
               onClick={() => scrollToSection('home')}
               className="block w-full text-left text-foreground hover:text-primary transition-fast py-2"
             >
-              Home
+              {t.nav.home}
             </button>
             <button 
               onClick={() => scrollToSection('services')}
               className="block w-full text-left text-foreground hover:text-primary transition-fast py-2"
             >
-              Services
+              {t.nav.services}
             </button>
             <button 
               onClick={() => scrollToSection('contact')}
               className="block w-full text-left text-foreground hover:text-primary transition-fast py-2"
             >
-              Contact
+              {t.nav.contact}
             </button>
             
             {/* Language Switcher */}
@@ -143,13 +144,6 @@ const Navigation = () => {
                 <SelectItem value="ru">RU</SelectItem>
               </SelectContent>
             </Select>
-            
-            <Button 
-              className="w-full electric-glow"
-              onClick={() => openBookingDialog()}
-            >
-              Book Now
-            </Button>
           </div>
         )}
       </div>

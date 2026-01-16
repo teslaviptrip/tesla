@@ -47,6 +47,7 @@ import {
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface BookingDialogProps {
   open: boolean;
@@ -73,6 +74,7 @@ const BookingDialog = ({ open, onOpenChange, defaultService }: BookingDialogProp
   });
 
   const { toast } = useToast();
+  const { t, language } = useLanguage();
 
   // If defaultService is provided, start on step 2 with service pre-selected
   useEffect(() => {
@@ -122,59 +124,43 @@ const BookingDialog = ({ open, onOpenChange, defaultService }: BookingDialogProp
   const services = [
     {
       id: 'airport',
-      name: 'Airport Transfer',
+      name: t.booking.services.airport.name,
       icon: Plane,
-      description: 'Professional airport transfers',
+      description: t.booking.services.airport.description,
       color: 'from-blue-500 to-cyan-500',
-      options: [
-        { label: 'Vienna Airport → Bratislava Airport', price: 'from €120' },
-        { label: 'Vienna City → Bratislava City', price: 'from €140' },
-        { label: 'Budapest Airport → Bratislava Airport', price: 'from €250' },
-        { label: 'Budapest Airport → Vienna Airport', price: 'from €280' }
-      ]
+      options: t.booking.services.airport.options
     },
     {
       id: 'vienna-bratislava',
-      name: 'Vienna-Bratislava Day',
+      name: t.booking.services.viennaBratislava.name,
       icon: Route,
-      description: 'Two capitals in one day',
+      description: t.booking.services.viennaBratislava.description,
       color: 'from-purple-500 to-pink-500',
-      options: [
-        { label: 'Half day experience (5 hours)', price: 'from €150' },
-        { label: 'Full day service (up to 10 hours)', price: 'from €250' }
-      ]
+      options: t.booking.services.viennaBratislava.options
     },
     {
       id: 'day-tours',
-      name: 'Private Day Tours',
+      name: t.booking.services.dayTours.name,
       icon: Sparkles,
-      description: 'Explore Central Europe',
+      description: t.booking.services.dayTours.description,
       color: 'from-amber-500 to-orange-500',
-      options: [
-        { label: 'Half day tour (up to 6 hours)', price: 'from €250' },
-        { label: 'Full day tour (8-10 hours)', price: 'from €400' }
-      ]
+      options: t.booking.services.dayTours.options
     },
     {
       id: 'business',
-      name: 'Business Transfer',
+      name: t.booking.services.business.name,
       icon: Building2,
-      description: 'Executive corporate service',
+      description: t.booking.services.business.description,
       color: 'from-indigo-500 to-blue-500',
-      options: [
-        { label: 'Hourly business transfer', price: 'from €80/hour' },
-        { label: 'Corporate packages', price: 'Custom quotes' }
-      ]
+      options: t.booking.services.business.options
     },
     {
       id: 'eco-luxury',
-      name: 'Eco-Luxury',
+      name: t.booking.services.ecoLuxury.name,
       icon: Leaf,
-      description: 'Sustainable luxury travel',
+      description: t.booking.services.ecoLuxury.description,
       color: 'from-green-500 to-emerald-500',
-      options: [
-        { label: 'Custom packages', price: 'Contact for pricing' }
-      ]
+      options: t.booking.services.ecoLuxury.options
     }
   ];
 
@@ -183,11 +169,11 @@ const BookingDialog = ({ open, onOpenChange, defaultService }: BookingDialogProp
   const selectedService = services.find(s => s.id === formData.service);
 
   const stepTitles = [
-    'Select Service',
-    'Select Option',
-    'Trip Details',
-    'Your Information',
-    'Review & Confirm'
+    t.booking.step1,
+    t.booking.step2,
+    t.booking.step3,
+    t.booking.step4,
+    t.booking.step5
   ];
 
   const canProceed = () => {
@@ -254,60 +240,70 @@ const BookingDialog = ({ open, onOpenChange, defaultService }: BookingDialogProp
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const emailSubject = `New Booking Request - ${selectedService?.name || formData.service}`;
+    const emailSubject = `${t.booking.email.subject} - ${formData.name}`;
     const emailBody = `
-New Booking Request
+${t.booking.email.greeting}
 
-Customer Information:
-- Name: ${formData.name}
-- Email: ${formData.email}
-- Phone: ${formData.phone}
+${t.booking.email.bookingDetails}
 
-Service Details:
-- Service: ${selectedService?.name || formData.service}
-- Option: ${formData.serviceOption || 'Not specified'}
+${t.booking.email.service}: ${selectedService?.name || formData.service}
+${t.booking.email.option}: ${formData.serviceOption || t.booking.fields.optional}
 
-Trip Details:
-- Pickup: ${formData.pickupLocation}
-- Destination: ${formData.destination}
-- Date: ${formData.date}
-- Time: ${formData.time}
-- Passengers: ${formData.passengers}
+${t.booking.review.tripDetails}:
+- ${t.booking.email.pickup}: ${formData.pickupLocation}
+- ${t.booking.email.destination}: ${formData.destination}
+- ${t.booking.email.date}: ${formData.date}
+- ${t.booking.email.time}: ${formData.time}
+- ${t.booking.email.passengers}: ${formData.passengers}
 
-Additional Message:
-${formData.message || 'None'}
+${t.booking.email.contact}:
+- ${t.booking.email.name}: ${formData.name}
+- ${t.booking.email.email}: ${formData.email}
+- ${t.booking.email.phone}: ${formData.phone}
 
-Submitted: ${new Date().toLocaleString()}
+${t.booking.email.message}:
+${formData.message || t.booking.fields.optional}
+
+${t.booking.email.footer}
     `.trim();
 
     const mailtoLink = `mailto:teslaservis149@gmail.com?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
     window.location.href = mailtoLink;
 
     toast({
-      title: "Booking Request Sent!",
-      description: "Your booking request has been prepared. Please send the email that opened to complete your booking.",
+      title: t.booking.messages.success,
+      description: t.booking.messages.successDesc,
       duration: 10000
     });
 
-    setTimeout(() => {
-      onOpenChange(false);
-      setCurrentStep(1);
-      setSelectedDate(undefined);
-      setCalendarOpen(false);
-      setFormData({
-        name: '',
-        email: '',
-        phone: '',
-        service: defaultService || '',
-        serviceOption: '',
-        pickupLocation: '',
-        destination: '',
-        date: '',
-        time: '',
-        passengers: '1',
-        message: ''
+      setTimeout(() => {
+        onOpenChange(false);
+        setCurrentStep(1);
+        setSelectedDate(undefined);
+        setCalendarOpen(false);
+        setFormData({
+          name: '',
+          email: '',
+          phone: '',
+          service: defaultService || '',
+          serviceOption: '',
+          pickupLocation: '',
+          destination: '',
+          date: '',
+          time: '',
+          passengers: '1',
+          message: ''
+        });
+      }, 2000);
+    } catch (error) {
+      console.error('Error sending booking email:', error);
+      toast({
+        title: t.ooking.messages.error,
+        description: t.ooking.messages.errorDesc,
+        variant: "destructive",
+        duration: 10000
       });
-    }, 2000);
+    }
   };
 
   const renderStepContent = () => {
@@ -343,7 +339,7 @@ Submitted: ${new Date().toLocaleString()}
                         {isSelected && (
                           <div className="flex items-center gap-1 md:gap-2 text-primary text-xs md:text-sm">
                             <Check className="w-3 h-3 md:w-4 md:h-4" />
-                            <span>Selected</span>
+                            <span>{t.booking.selected}</span>
                           </div>
                         )}
                       </div>
@@ -440,14 +436,14 @@ Submitted: ${new Date().toLocaleString()}
                 <div className="space-y-2">
                   <Label htmlFor="pickupLocation" className="flex items-center gap-2">
                     <MapPin className="w-4 h-4 text-primary" />
-                    Pickup Location <span className="text-destructive">*</span>
+                    {t.booking.fields.pickupLocation} <span className="text-destructive">{t.booking.fields.required}</span>
                   </Label>
                   <Input
                     id="pickupLocation"
                     name="pickupLocation"
                     value={formData.pickupLocation}
                     onChange={(e) => setFormData(prev => ({ ...prev, pickupLocation: e.target.value }))}
-                    placeholder="Airport, address, or landmark"
+                    placeholder={t.booking.placeholders.pickupLocation}
                     required
                     className="h-12"
                   />
@@ -455,14 +451,14 @@ Submitted: ${new Date().toLocaleString()}
                 <div className="space-y-2">
                   <Label htmlFor="destination" className="flex items-center gap-2">
                     <MapPin className="w-4 h-4 text-primary" />
-                    Destination <span className="text-destructive">*</span>
+                    {t.booking.fields.destination} <span className="text-destructive">{t.booking.fields.required}</span>
                   </Label>
                   <Input
                     id="destination"
                     name="destination"
                     value={formData.destination}
                     onChange={(e) => setFormData(prev => ({ ...prev, destination: e.target.value }))}
-                    placeholder="Destination address or landmark"
+                    placeholder={t.booking.placeholders.destination}
                     required
                     className="h-12"
                   />
@@ -472,7 +468,7 @@ Submitted: ${new Date().toLocaleString()}
                 <div className="space-y-2">
                   <Label htmlFor="date" className="flex items-center gap-2">
                     <CalendarIcon className="w-4 h-4 text-primary" />
-                    Date <span className="text-destructive">*</span>
+                    {t.booking.fields.date} <span className="text-destructive">{t.booking.fields.required}</span>
                   </Label>
                   <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
                     <PopoverTrigger asChild>
@@ -488,7 +484,7 @@ Submitted: ${new Date().toLocaleString()}
                         {selectedDate ? (
                           format(selectedDate, "PPP")
                         ) : (
-                          <span>Pick a date</span>
+                          <span>{t.booking.placeholders.selectDate}</span>
                         )}
                       </Button>
                     </PopoverTrigger>
@@ -515,7 +511,7 @@ Submitted: ${new Date().toLocaleString()}
                 <div className="space-y-2">
                   <Label htmlFor="time" className="flex items-center gap-2">
                     <Clock className="w-4 h-4 text-primary" />
-                    Time <span className="text-destructive">*</span>
+                    {t.booking.fields.time} <span className="text-destructive">{t.booking.fields.required}</span>
                   </Label>
                   <Select
                     value={formData.time}
@@ -523,10 +519,10 @@ Submitted: ${new Date().toLocaleString()}
                     required
                   >
                     <SelectTrigger className="h-12">
-                      <SelectValue placeholder="Select time">
+                      <SelectValue placeholder={t.booking.placeholders.selectTime}>
                         {formData.time 
                           ? timeSlots.find(slot => slot.value === formData.time)?.label 
-                          : "Select time"}
+                          : t.booking.placeholders.selectTime}
                       </SelectValue>
                     </SelectTrigger>
                     <SelectContent className="max-h-[300px]">
@@ -541,15 +537,15 @@ Submitted: ${new Date().toLocaleString()}
                 <div className="space-y-2">
                   <Label htmlFor="passengers" className="flex items-center gap-2">
                     <Users className="w-4 h-4 text-primary" />
-                    Passengers
+                    {t.booking.fields.passengers}
                   </Label>
                   <Select
                     value={formData.passengers}
                     onValueChange={(value) => setFormData(prev => ({ ...prev, passengers: value }))}
                   >
                     <SelectTrigger className="h-12">
-                      <SelectValue placeholder="Select passengers">
-                        {formData.passengers ? `${formData.passengers} ${formData.passengers === '1' ? 'passenger' : 'passengers'}` : "Select passengers"}
+                      <SelectValue placeholder={t.booking.placeholders.selectPassengers}>
+                        {formData.passengers ? `${formData.passengers} ${formData.passengers === '1' ? 'passenger' : 'passengers'}` : t.booking.placeholders.selectPassengers}
                       </SelectValue>
                     </SelectTrigger>
                     <SelectContent>
@@ -573,14 +569,14 @@ Submitted: ${new Date().toLocaleString()}
               <div className="space-y-2">
                 <Label htmlFor="name" className="flex items-center gap-2">
                   <User className="w-4 h-4 text-primary" />
-                  Full Name <span className="text-destructive">*</span>
+                  {t.booking.fields.name} <span className="text-destructive">{t.booking.fields.required}</span>
                 </Label>
                 <Input
                   id="name"
                   name="name"
                   value={formData.name}
                   onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                  placeholder="John Doe"
+                  placeholder={t.booking.placeholders.enterName}
                   required
                   className="h-12"
                 />
@@ -588,7 +584,7 @@ Submitted: ${new Date().toLocaleString()}
               <div className="space-y-2">
                 <Label htmlFor="email" className="flex items-center gap-2">
                   <Mail className="w-4 h-4 text-primary" />
-                  Email Address <span className="text-destructive">*</span>
+                  {t.booking.fields.email} <span className="text-destructive">{t.booking.fields.required}</span>
                 </Label>
                 <Input
                   id="email"
@@ -596,7 +592,7 @@ Submitted: ${new Date().toLocaleString()}
                   type="email"
                   value={formData.email}
                   onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
-                  placeholder="your@email.com"
+                  placeholder={t.booking.placeholders.enterEmail}
                   required
                   className="h-12"
                 />
@@ -604,7 +600,7 @@ Submitted: ${new Date().toLocaleString()}
               <div className="space-y-2">
                 <Label htmlFor="phone" className="flex items-center gap-2">
                   <Phone className="w-4 h-4 text-primary" />
-                  Phone Number <span className="text-destructive">*</span>
+                  {t.booking.fields.phone} <span className="text-destructive">{t.booking.fields.required}</span>
                 </Label>
                 <Input
                   id="phone"
@@ -612,19 +608,19 @@ Submitted: ${new Date().toLocaleString()}
                   type="tel"
                   value={formData.phone}
                   onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
-                  placeholder="+421 940 631 268"
+                  placeholder={t.booking.placeholders.enterPhone}
                   required
                   className="h-12"
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="message">Additional Requirements (Optional)</Label>
+                <Label htmlFor="message">{t.booking.fields.message} {t.booking.fields.optional}</Label>
                 <Textarea
                   id="message"
                   name="message"
                   value={formData.message}
                   onChange={(e) => setFormData(prev => ({ ...prev, message: e.target.value }))}
-                  placeholder="Special requirements, luggage details, accessibility needs..."
+                  placeholder={t.booking.placeholders.additionalNotes}
                   rows={4}
                   className="resize-none"
                 />
@@ -640,42 +636,42 @@ Submitted: ${new Date().toLocaleString()}
               <Card className="p-4 bg-muted/50">
                 <h4 className="font-semibold mb-3 flex items-center gap-2">
                   <Zap className="w-4 h-4 text-primary" />
-                  Service
+                  {t.booking.review.service}
                 </h4>
                 <div className="space-y-1 text-sm">
-                  <p><span className="text-muted-foreground">Type:</span> {selectedService?.name}</p>
+                  <p><span className="text-muted-foreground">{t.booking.review.service}:</span> {selectedService?.name}</p>
                   {formData.serviceOption && (
-                    <p><span className="text-muted-foreground">Option:</span> {formData.serviceOption}</p>
+                    <p><span className="text-muted-foreground">{t.booking.review.option}:</span> {formData.serviceOption}</p>
                   )}
                 </div>
               </Card>
               <Card className="p-4 bg-muted/50">
                 <h4 className="font-semibold mb-3 flex items-center gap-2">
                   <Route className="w-4 h-4 text-primary" />
-                  Trip Details
+                  {t.booking.review.tripDetails}
                 </h4>
                 <div className="space-y-1 text-sm">
-                  <p><span className="text-muted-foreground">From:</span> {formData.pickupLocation}</p>
-                  <p><span className="text-muted-foreground">To:</span> {formData.destination}</p>
-                  <p><span className="text-muted-foreground">Date:</span> {selectedDate ? format(selectedDate, 'PPP') : formData.date}</p>
-                  <p><span className="text-muted-foreground">Time:</span> {formData.time ? timeSlots.find(slot => slot.value === formData.time)?.label : formData.time}</p>
-                  <p><span className="text-muted-foreground">Passengers:</span> {formData.passengers}</p>
+                  <p><span className="text-muted-foreground">{t.booking.email.pickup}:</span> {formData.pickupLocation}</p>
+                  <p><span className="text-muted-foreground">{t.booking.email.destination}:</span> {formData.destination}</p>
+                  <p><span className="text-muted-foreground">{t.booking.email.date}:</span> {selectedDate ? format(selectedDate, 'PPP') : formData.date}</p>
+                  <p><span className="text-muted-foreground">{t.booking.email.time}:</span> {formData.time ? timeSlots.find(slot => slot.value === formData.time)?.label : formData.time}</p>
+                  <p><span className="text-muted-foreground">{t.booking.email.passengers}:</span> {formData.passengers}</p>
                 </div>
               </Card>
               <Card className="p-4 bg-muted/50">
                 <h4 className="font-semibold mb-3 flex items-center gap-2">
                   <User className="w-4 h-4 text-primary" />
-                  Contact Information
+                  {t.booking.review.contactInfo}
                 </h4>
                 <div className="space-y-1 text-sm">
-                  <p><span className="text-muted-foreground">Name:</span> {formData.name}</p>
-                  <p><span className="text-muted-foreground">Email:</span> {formData.email}</p>
-                  <p><span className="text-muted-foreground">Phone:</span> {formData.phone}</p>
+                  <p><span className="text-muted-foreground">{t.booking.email.name}:</span> {formData.name}</p>
+                  <p><span className="text-muted-foreground">{t.booking.email.email}:</span> {formData.email}</p>
+                  <p><span className="text-muted-foreground">{t.booking.email.phone}:</span> {formData.phone}</p>
                 </div>
               </Card>
               {formData.message && (
                 <Card className="p-4 bg-muted/50">
-                  <h4 className="font-semibold mb-2">Additional Notes</h4>
+                  <h4 className="font-semibold mb-2">{t.booking.review.additionalNotes}</h4>
                   <p className="text-sm text-muted-foreground">{formData.message}</p>
                 </Card>
               )}
@@ -723,7 +719,7 @@ Submitted: ${new Date().toLocaleString()}
               className="flex items-center gap-2"
             >
               <ArrowLeft className="w-4 h-4" />
-              Back
+              {t.booking.back}
             </Button>
           ) : (
             <div></div>
@@ -738,7 +734,7 @@ Submitted: ${new Date().toLocaleString()}
                   disabled={!canProceed()}
                   className="electric-glow hover-glow flex items-center gap-2"
                 >
-                  Continue
+                  {t.booking.continue}
                   <ArrowRight className="w-4 h-4" />
                 </Button>
               )
@@ -749,7 +745,7 @@ Submitted: ${new Date().toLocaleString()}
                 className="electric-glow hover-glow flex items-center gap-2"
               >
                 <Send className="w-4 h-4" />
-                Confirm Booking
+                {t.booking.confirm}
               </Button>
             )}
           </div>

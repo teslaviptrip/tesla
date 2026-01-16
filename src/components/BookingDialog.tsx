@@ -59,6 +59,7 @@ const BookingDialog = ({ open, onOpenChange, defaultService }: BookingDialogProp
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
   const [calendarOpen, setCalendarOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -237,6 +238,32 @@ const BookingDialog = ({ open, onOpenChange, defaultService }: BookingDialogProp
     }
   };
 
+  // Security: Client-side validation function
+  const validateForm = (): { valid: boolean; error?: string } => {
+    if (!formData.name || formData.name.trim().length < 2) {
+      return { valid: false, error: t.ooking.fields.name };
+    }
+    if (!formData.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      return { valid: false, error: t.ooking.fields.email };
+    }
+    if (!formData.phone || formData.phone.trim().length < 7) {
+      return { valid: false, error: t.ooking.fields.phone };
+    }
+    if (!formData.pickupLocation || formData.pickupLocation.trim().length < 3) {
+      return { valid: false, error: t.ooking.fields.pickupLocation };
+    }
+    if (!formData.destination || formData.destination.trim().length < 3) {
+      return { valid: false, error: t.ooking.fields.destination };
+    }
+    if (!formData.date) {
+      return { valid: false, error: t.ooking.fields.date };
+    }
+    if (!formData.time) {
+      return { valid: false, error: t.ooking.fields.time };
+    }
+    return { valid: true };
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -267,8 +294,83 @@ ${formData.message || t.booking.fields.optional}
 ${t.booking.email.footer}
     `.trim();
 
-    const mailtoLink = `mailto:teslaservis149@gmail.com?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
-    window.location.href = mailtoLink;
+    // Security: Client-side validation
+    const validation = validateForm();
+    if (!validation.valid) {
+      toast({
+        title: t.ooking.messages.error,
+        description: validation.error ? `${validation.error} ${t.ooking.fields.required}` : t.ooking.messages.errorDesc,
+        variant: "destructive",
+        duration: 5000
+      });
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      // Prepare booking data for API
+      const bookingData = {
+        name: formData.name.trim(),
+        email: formData.email.trim().toLowerCase(),
+        phone: formData.phone.trim(),
+        service: selectedService?.name || formData.service,
+        serviceOption: formData.serviceOption || '',
+        pickupLocation: formData.pickupLocation.trim(),
+        destination: formData.destination.trim(),
+        date: formData.date,
+        time: formData.time,
+        passengers: formData.passengers,
+        message: formData.message.trim(),
+        // Translation keys for email
+        bookingDetails: t.ooking.email.ookingDetails,
+        service: t.ooking.email.service,
+        option: t.ooking.email.option,
+        tripDetails: t.ooking.review.tripDetails,
+        pickup: t.ooking.email.pickup,
+        destination: t.ooking.email.destination,
+        date: t.ooking.email.date,
+        time: t.ooking.email.time,
+        passengers: t.ooking.email.passengers,
+        contact: t.ooking.email.contact,
+        name: t.ooking.email.name,
+        email: t.ooking.email.email,
+        phone: t.ooking.email.phone,
+        message: t.ooking.email.message,
+        footer: t.ooking.email.footer,
+        subject: t.ooking.email.subject,
+        greeting: t.ooking.email.greeting,
+        optional: t.ooking.fields.optional,
+      };
+
+      const confirmationEmail = {
+        subject: t.ooking.confirmation.subject,
+        greeting: t.ooking.confirmation.greeting,
+        thankYou: t.ooking.confirmation.thankYou,
+        message: t.ooking.confirmation.message,
+        nextSteps: t.ooking.confirmation.nextSteps,
+        footer: t.ooking.confirmation.footer,
+      };
+
+      // Call API endpoint
+      const response = await fetch('/api/send-booking-email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          customerEmail: formData.email.trim().toLowerCase(),
+          customerName: formData.name.trim(),
+          language: language,
+          bookingData,
+          confirmationEmail,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || 'Failed to send booking request');
+      }
 
     toast({
       title: t.booking.messages.success,
@@ -295,6 +397,17 @@ ${t.booking.email.footer}
         message: ''
       });
     }, 2000);
+    } catch (error: any) {
+      console.error('Error submitting booking:', error);
+      toast({
+        title: t.ooking.messages.error,
+        description: error.message || t.ooking.messages.errorDesc,
+        variant: "destructive",
+        duration: 10000
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const renderStepContent = () => {

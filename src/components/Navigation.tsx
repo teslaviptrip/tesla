@@ -88,8 +88,14 @@ const Navigation = () => {
             </Button>
           </div>
 
-          {/* Mobile Menu Button */}
-          <div className="md:hidden">
+          {/* Mobile Menu Button and Book Now */}
+          <div className="md:hidden flex items-center gap-2">
+            <Button 
+              className="electric-glow hover-glow"
+              onClick={() => openBookingDialog()}
+            >
+              Book Now
+            </Button>
             <Button
               variant="ghost"
               size="icon"

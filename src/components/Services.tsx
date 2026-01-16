@@ -1,5 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Check } from "lucide-react";
+import { useBooking } from "@/contexts/BookingContext";
 import serviceAirport from "@/assets/service-airport.jpg";
 import serviceTwoCities from "@/assets/service-two-cities.jpg";
 import serviceTours from "@/assets/service-tours.jpg";
@@ -7,6 +8,19 @@ import serviceBusiness from "@/assets/service-business.jpg";
 import serviceEco from "@/assets/service-eco.jpg";
 
 const Services = () => {
+  const { openBookingDialog } = useBooking();
+
+  // Map service titles to booking service IDs
+  const getServiceId = (title: string): string => {
+    const mapping: Record<string, string> = {
+      "Airport Transfer Service": "airport",
+      "Vienna-Bratislava Day": "vienna-bratislava",
+      "Private Day Tours by Tesla": "day-tours",
+      "Executive Business Transfer": "business",
+      "Sustainable Luxury Mobility": "eco-luxury"
+    };
+    return mapping[title] || "";
+  };
   const services = [
     {
       image: serviceAirport,
@@ -107,8 +121,14 @@ const Services = () => {
 
         {/* Main Services Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {services.map((service, index) => (
-            <Card key={index} className="luxury-card hover-lift group flex flex-col overflow-hidden">
+          {services.map((service, index) => {
+            const serviceId = getServiceId(service.title);
+            return (
+            <Card 
+              key={index} 
+              className="luxury-card hover-lift group flex flex-col overflow-hidden cursor-pointer"
+              onClick={() => serviceId && openBookingDialog(serviceId)}
+            >
               {/* Service Image */}
               <div className="relative h-48 overflow-hidden">
                 <img 
@@ -158,7 +178,8 @@ const Services = () => {
                 </div>
               </CardContent>
             </Card>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>

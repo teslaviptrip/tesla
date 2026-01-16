@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -73,6 +73,42 @@ const BookingDialog = ({ open, onOpenChange, defaultService }: BookingDialogProp
   });
 
   const { toast } = useToast();
+
+  // If defaultService is provided, start on step 2 with service pre-selected
+  useEffect(() => {
+    if (open && defaultService) {
+      setFormData(prev => ({
+        ...prev,
+        service: defaultService
+      }));
+      setCurrentStep(2);
+    } else if (open && !defaultService) {
+      // Reset to step 1 if no default service
+      setCurrentStep(1);
+    } else if (!open) {
+      // Reset state when dialog closes
+      setCurrentStep(1);
+      setSelectedDate(undefined);
+      setCalendarOpen(false);
+      setFormData({
+        name: '',
+        email: '',
+        phone: '',
+        service: '',
+        serviceOption: '',
+        pickupLocation: '',
+        destination: '',
+        date: '',
+        time: '',
+        passengers: '1',
+        message: ''
+      });
+    }
+  }, [open, defaultService]);
+
+  const handleDialogClose = (open: boolean) => {
+    onOpenChange(open);
+  };
 
   // Generate time slots every 30 minutes (00:00 to 23:30)
   const timeSlots = Array.from({ length: 48 }, (_, i) => {
@@ -651,7 +687,7 @@ Submitted: ${new Date().toLocaleString()}
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={handleDialogClose}>
       <DialogContent className="max-w-3xl max-h-[90vh] overflow-hidden flex flex-col p-0">
         {/* Header with Progress */}
         <div className="px-6 pt-6 pb-4 border-b">

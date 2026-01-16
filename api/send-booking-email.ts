@@ -2,6 +2,8 @@ import { Resend } from 'resend';
 
 const resend = new Resend('re_Cmf2uRXx_6zyqGA1DBx1kAPUzx8z1Zc7a');
 
+// Booking email handler
+
 export default async function handler(req: any, res: any) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });

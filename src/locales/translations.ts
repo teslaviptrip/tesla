@@ -208,6 +208,56 @@ export interface Translations {
       footer: string;
     };
   };
+  
+  // Cookie Consent
+  cookie: {
+    title: string;
+    description: string;
+    privacyLink: string;
+    necessary: string;
+    acceptAll: string;
+  };
+  
+  // Privacy Policy
+  privacy: {
+    title: string;
+    lastUpdated: string;
+    back: string;
+    sections: {
+      introduction: {
+        title: string;
+        content: string;
+      };
+      information: {
+        title: string;
+        intro: string;
+        items: string[];
+      };
+      usage: {
+        title: string;
+        intro: string;
+        items: string[];
+      };
+      security: {
+        title: string;
+        content: string;
+      };
+      cookies: {
+        title: string;
+        content: string;
+      };
+      rights: {
+        title: string;
+        intro: string;
+        items: string[];
+      };
+      contact: {
+        title: string;
+        content: string;
+        email: string;
+      };
+    };
+  };
 }
 
 export const translations: Record<Language, Translations> = {
@@ -474,6 +524,71 @@ export const translations: Record<Language, Translations> = {
         footer: "We look forward to providing you with an exceptional travel experience. If you have any questions, feel free to contact us.",
       },
     },
+    cookie: {
+      title: "Cookie Policy",
+      description: "We use cookies to enhance your experience. By clicking \"Accept All Cookies\" or selecting \"Necessary Cookies\", you agree to our",
+      privacyLink: "privacy policy",
+      necessary: "Necessary Cookies",
+      acceptAll: "Accept All Cookies",
+    },
+    privacy: {
+      title: "Privacy Policy",
+      lastUpdated: "Last updated: January 2026",
+      back: "Back to Home",
+      sections: {
+        introduction: {
+          title: "Introduction",
+          content: "Tesla VIP Trip (\"we\", \"our\", or \"us\") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our premium Tesla chauffeur service.",
+        },
+        information: {
+          title: "Information We Collect",
+          intro: "We collect information that you provide directly to us, including:",
+          items: [
+            "Personal information such as name, email address, phone number, and billing address",
+            "Booking information including pickup location, destination, date, and time",
+            "Payment information processed securely through our payment partners",
+            "Communication preferences and feedback",
+          ],
+        },
+        usage: {
+          title: "How We Use Your Information",
+          intro: "We use the information we collect to:",
+          items: [
+            "Process and manage your bookings",
+            "Communicate with you about your reservations",
+            "Provide customer support and respond to inquiries",
+            "Improve our services and user experience",
+            "Send promotional materials (with your consent)",
+            "Comply with legal obligations",
+          ],
+        },
+        security: {
+          title: "Data Security",
+          content: "We implement appropriate technical and organizational measures to protect your personal information against unauthorized access, alteration, disclosure, or destruction. However, no method of transmission over the Internet is 100% secure.",
+        },
+        cookies: {
+          title: "Cookies",
+          content: "We use necessary cookies to ensure the website functions properly. These cookies are essential for providing you with our services. You can choose to accept all cookies or only necessary cookies through our cookie consent banner.",
+        },
+        rights: {
+          title: "Your Rights",
+          intro: "You have the right to:",
+          items: [
+            "Access your personal information",
+            "Request correction of inaccurate data",
+            "Request deletion of your data",
+            "Object to processing of your data",
+            "Request data portability",
+            "Withdraw consent at any time",
+          ],
+        },
+        contact: {
+          title: "Contact Us",
+          content: "If you have questions about this Privacy Policy, please contact us at",
+          email: "info@teslaviptrip.com",
+        },
+      },
+    },
   },
   de: {
     nav: {
@@ -736,6 +851,71 @@ export const translations: Record<Language, Translations> = {
         message: "Ihre Buchungsanfrage wurde erfolgreich erhalten. Unser Vertreter wird sich in Kürze mit Ihnen in Verbindung setzen, um die Details zu besprechen und Ihre Reservierung zu bestätigen.",
         nextSteps: "Was passiert als Nächstes?",
         footer: "Wir freuen uns darauf, Ihnen ein außergewöhnliches Reiseerlebnis zu bieten. Bei Fragen können Sie uns gerne kontaktieren.",
+      },
+    },
+    cookie: {
+      title: "Cookie-Richtlinie",
+      description: "Wir verwenden Cookies, um Ihre Erfahrung zu verbessern. Durch Klicken auf \"Alle Cookies akzeptieren\" oder Auswahl von \"Notwendige Cookies\" stimmen Sie unserer",
+      privacyLink: "Datenschutzrichtlinie",
+      necessary: "Notwendige Cookies",
+      acceptAll: "Alle Cookies akzeptieren",
+    },
+    privacy: {
+      title: "Datenschutzrichtlinie",
+      lastUpdated: "Zuletzt aktualisiert: Januar 2026",
+      back: "Zurück zur Startseite",
+      sections: {
+        introduction: {
+          title: "Einführung",
+          content: "Tesla VIP Trip (\"wir\", \"unser\" oder \"uns\") ist dem Schutz Ihrer Privatsphäre verpflichtet. Diese Datenschutzrichtlinie erläutert, wie wir Ihre Informationen erfassen, verwenden, offenlegen und schützen, wenn Sie unseren Premium Tesla Chauffeur-Service nutzen.",
+        },
+        information: {
+          title: "Informationen, die wir sammeln",
+          intro: "Wir erfassen Informationen, die Sie uns direkt bereitstellen, einschließlich:",
+          items: [
+            "Persönliche Informationen wie Name, E-Mail-Adresse, Telefonnummer und Rechnungsadresse",
+            "Buchungsinformationen einschließlich Abholort, Ziel, Datum und Uhrzeit",
+            "Zahlungsinformationen, die sicher über unsere Zahlungspartner verarbeitet werden",
+            "Kommunikationspräferenzen und Feedback",
+          ],
+        },
+        usage: {
+          title: "Wie wir Ihre Informationen verwenden",
+          intro: "Wir verwenden die gesammelten Informationen, um:",
+          items: [
+            "Ihre Buchungen zu bearbeiten und zu verwalten",
+            "Mit Ihnen über Ihre Reservierungen zu kommunizieren",
+            "Kundensupport zu bieten und Anfragen zu beantworten",
+            "Unsere Dienstleistungen und Benutzererfahrung zu verbessern",
+            "Werbeunterlagen zu senden (mit Ihrer Zustimmung)",
+            "Rechtliche Verpflichtungen zu erfüllen",
+          ],
+        },
+        security: {
+          title: "Datensicherheit",
+          content: "Wir implementieren angemessene technische und organisatorische Maßnahmen, um Ihre persönlichen Informationen vor unbefugtem Zugriff, Änderung, Offenlegung oder Zerstörung zu schützen. Keine Übertragungsmethode über das Internet ist jedoch 100% sicher.",
+        },
+        cookies: {
+          title: "Cookies",
+          content: "Wir verwenden notwendige Cookies, um sicherzustellen, dass die Website ordnungsgemäß funktioniert. Diese Cookies sind für die Bereitstellung unserer Dienstleistungen unerlässlich. Sie können wählen, alle Cookies oder nur notwendige Cookies über unseren Cookie-Zustimmungsbanner zu akzeptieren.",
+        },
+        rights: {
+          title: "Ihre Rechte",
+          intro: "Sie haben das Recht:",
+          items: [
+            "Auf Ihre persönlichen Informationen zuzugreifen",
+            "Korrektur ungenauer Daten anzufordern",
+            "Löschung Ihrer Daten anzufordern",
+            "Der Verarbeitung Ihrer Daten zu widersprechen",
+            "Datenportabilität anzufordern",
+            "Ihre Zustimmung jederzeit zu widerrufen",
+          ],
+        },
+        contact: {
+          title: "Kontaktieren Sie uns",
+          content: "Wenn Sie Fragen zu dieser Datenschutzrichtlinie haben, kontaktieren Sie uns bitte unter",
+          email: "info@teslaviptrip.com",
+        },
       },
     },
   },
@@ -1002,6 +1182,71 @@ export const translations: Record<Language, Translations> = {
         footer: "Tešíme sa, že vám poskytneme výnimočný zážitok z cestovania. Ak máte nejaké otázky, neváhajte nás kontaktovať.",
       },
     },
+    cookie: {
+      title: "Zásady cookies",
+      description: "Používame cookies na zlepšenie vašej skúsenosti. Kliknutím na \"Prijať všetky cookies\" alebo výberom \"Nevyhnutné cookies\" súhlasíte s našou",
+      privacyLink: "zásadami ochrany súkromia",
+      necessary: "Nevyhnutné cookies",
+      acceptAll: "Prijať všetky cookies",
+    },
+    privacy: {
+      title: "Zásady ochrany súkromia",
+      lastUpdated: "Posledná aktualizácia: január 2026",
+      back: "Späť na domov",
+      sections: {
+        introduction: {
+          title: "Úvod",
+          content: "Tesla VIP Trip (\"my\", \"náš\" alebo \"nás\") sa zaväzuje chrániť vaše súkromie. Tieto Zásady ochrany súkromia vysvetľujú, ako zhromažďujeme, používame, zverejňujeme a chránime vaše informácie pri používaní našej prémiovej služby Tesla vodiča.",
+        },
+        information: {
+          title: "Informácie, ktoré zhromažďujeme",
+          intro: "Zhromažďujeme informácie, ktoré nám poskytnete priamo, vrátane:",
+          items: [
+            "Osobné informácie ako meno, e-mailová adresa, telefónne číslo a fakturačná adresa",
+            "Rezervačné informácie vrátane miesta vyzdvihnutia, cieľa, dátumu a času",
+            "Platobné informácie spracovávané bezpečne prostredníctvom našich platobných partnerov",
+            "Komunikačné preferencie a spätná väzba",
+          ],
+        },
+        usage: {
+          title: "Ako používame vaše informácie",
+          intro: "Používame zhromaždené informácie na:",
+          items: [
+            "Spracovanie a správu vašich rezervácií",
+            "Komunikáciu s vami o vašich rezerváciách",
+            "Poskytovanie zákazníckej podpory a odpovedanie na otázky",
+            "Zlepšenie našich služieb a používateľskej skúsenosti",
+            "Odosielanie propagačných materiálov (s vaším súhlasom)",
+            "Splnenie zákonných povinností",
+          ],
+        },
+        security: {
+          title: "Bezpečnosť dát",
+          content: "Implementujeme primerané technické a organizačné opatrenia na ochranu vašich osobných informácií pred neoprávneným prístupom, zmenou, zverejnením alebo zničením. Žiadny spôsob prenosu cez internet však nie je 100% bezpečný.",
+        },
+        cookies: {
+          title: "Cookies",
+          content: "Používame nevyhnutné cookies na zabezpečenie správneho fungovania webovej stránky. Tieto cookies sú nevyhnutné pre poskytovanie našich služieb. Môžete sa rozhodnúť prijať všetky cookies alebo len nevyhnutné cookies prostredníctvom nášho banneru súhlasu s cookies.",
+        },
+        rights: {
+          title: "Vaše práva",
+          intro: "Máte právo:",
+          items: [
+            "Prístup k vašim osobným informáciám",
+            "Požiadať o opravu nepresných údajov",
+            "Požiadať o vymazanie vašich údajov",
+            "Namietať proti spracovaniu vašich údajov",
+            "Požiadať o prenosnosť údajov",
+            "Kedykoľvek odvolať súhlas",
+          ],
+        },
+        contact: {
+          title: "Kontaktujte nás",
+          content: "Ak máte otázky týkajúce sa týchto Zásad ochrany súkromia, kontaktujte nás na",
+          email: "info@teslaviptrip.com",
+        },
+      },
+    },
   },
   ru: {
     nav: {
@@ -1264,6 +1509,71 @@ export const translations: Record<Language, Translations> = {
         message: "Ваш запрос на бронирование успешно получен. Наш представитель свяжется с вами в ближайшее время, чтобы обсудить детали и подтвердить вашу бронь.",
         nextSteps: "Что происходит дальше?",
         footer: "Мы с нетерпением ждем возможности предоставить вам незабываемые впечатления от путешествия. Если у вас есть вопросы, не стесняйтесь обращаться к нам.",
+      },
+    },
+    cookie: {
+      title: "Политика использования cookies",
+      description: "Мы используем cookies для улучшения вашего опыта. Нажимая \"Принять все cookies\" или выбирая \"Необходимые cookies\", вы соглашаетесь с нашей",
+      privacyLink: "политикой конфиденциальности",
+      necessary: "Необходимые cookies",
+      acceptAll: "Принять все cookies",
+    },
+    privacy: {
+      title: "Политика конфиденциальности",
+      lastUpdated: "Последнее обновление: январь 2026",
+      back: "Вернуться на главную",
+      sections: {
+        introduction: {
+          title: "Введение",
+          content: "Tesla VIP Trip (\"мы\", \"наш\" или \"нас\") обязуется защищать вашу конфиденциальность. Эта Политика конфиденциальности объясняет, как мы собираем, используем, раскрываем и защищаем вашу информацию при использовании нашего премиального сервиса водителя Tesla.",
+        },
+        information: {
+          title: "Информация, которую мы собираем",
+          intro: "Мы собираем информацию, которую вы предоставляете нам напрямую, включая:",
+          items: [
+            "Личную информацию, такую как имя, адрес электронной почты, номер телефона и адрес для выставления счета",
+            "Информацию о бронировании, включая место отправления, пункт назначения, дату и время",
+            "Платежную информацию, обрабатываемую безопасно через наших платежных партнеров",
+            "Коммуникационные предпочтения и обратную связь",
+          ],
+        },
+        usage: {
+          title: "Как мы используем вашу информацию",
+          intro: "Мы используем собранную информацию для:",
+          items: [
+            "Обработки и управления вашими бронированиями",
+            "Связи с вами по поводу ваших бронирований",
+            "Предоставления поддержки клиентам и ответов на запросы",
+            "Улучшения наших услуг и пользовательского опыта",
+            "Отправки рекламных материалов (с вашего согласия)",
+            "Соблюдения юридических обязательств",
+          ],
+        },
+        security: {
+          title: "Безопасность данных",
+          content: "Мы применяем соответствующие технические и организационные меры для защиты вашей личной информации от несанкционированного доступа, изменения, раскрытия или уничтожения. Однако ни один способ передачи через Интернет не является на 100% безопасным.",
+        },
+        cookies: {
+          title: "Cookies",
+          content: "Мы используем необходимые cookies для обеспечения правильного функционирования веб-сайта. Эти cookies необходимы для предоставления вам наших услуг. Вы можете выбрать принятие всех cookies или только необходимых cookies через наш баннер согласия на cookies.",
+        },
+        rights: {
+          title: "Ваши права",
+          intro: "Вы имеете право:",
+          items: [
+            "Получить доступ к вашей личной информации",
+            "Запросить исправление неточных данных",
+            "Запросить удаление ваших данных",
+            "Возразить против обработки ваших данных",
+            "Запросить переносимость данных",
+            "Отозвать согласие в любое время",
+          ],
+        },
+        contact: {
+          title: "Свяжитесь с нами",
+          content: "Если у вас есть вопросы об этой Политике конфиденциальности, пожалуйста, свяжитесь с нами по адресу",
+          email: "info@teslaviptrip.com",
+        },
       },
     },
   },

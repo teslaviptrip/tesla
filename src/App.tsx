@@ -8,6 +8,8 @@ import { BookingProvider, useBooking } from "@/contexts/BookingContext";
 import BookingDialog from "@/components/BookingDialog";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import CookieConsent from "./components/CookieConsent";
 
 const AppContent = () => {
   const { isOpen, selectedService, setIsOpen } = useBooking();
@@ -23,8 +25,10 @@ const AppContent = () => {
         <Toaster />
         <Sonner />
         <BrowserRouter>
+          <CookieConsent />
           <Routes>
             <Route path="/" element={<Index />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

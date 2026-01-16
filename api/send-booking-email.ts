@@ -234,4 +234,4 @@ export default async function handler(req: any, res: any) {
     return res.status(500).json({ error: 'Failed to send email. Please try again later.' });
   }
 }
-// Updated: Fri Jan 16 15:48:12 CET 2026
+Fri Jan 16 15:48:12 CET 2026

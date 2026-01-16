@@ -848,6 +848,7 @@ ${t.booking.email.footer}
                 type="submit"
                 form="booking-form"
                 className="electric-glow hover-glow flex items-center gap-2"
+                disabled={isSubmitting}
               >
                 <Send className="w-4 h-4" />
                 {t.booking.confirm}

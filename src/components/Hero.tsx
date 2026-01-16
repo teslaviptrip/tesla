@@ -70,14 +70,6 @@ const Hero = () => {
               Book Your Ride
               <ArrowRight className="w-5 h-5 ml-2" />
             </Button>
-            <Button 
-              variant="outline" 
-              size="lg" 
-              className="px-8 py-4 text-lg border-white/20 bg-white/10 backdrop-blur-sm hover:bg-white/20"
-              onClick={() => document.getElementById('fleet')?.scrollIntoView({ behavior: 'smooth' })}
-            >
-              View Fleet
-            </Button>
           </div>
         </div>
       </div>

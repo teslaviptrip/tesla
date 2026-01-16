@@ -56,12 +56,6 @@ const Navigation = () => {
               Services
             </button>
             <button 
-              onClick={() => scrollToSection('fleet')}
-              className="text-foreground hover:text-primary transition-fast"
-            >
-              Fleet
-            </button>
-            <button 
               onClick={() => scrollToSection('contact')}
               className="text-foreground hover:text-primary transition-fast"
             >
@@ -118,12 +112,6 @@ const Navigation = () => {
               className="block w-full text-left text-foreground hover:text-primary transition-fast py-2"
             >
               Services
-            </button>
-            <button 
-              onClick={() => scrollToSection('fleet')}
-              className="block w-full text-left text-foreground hover:text-primary transition-fast py-2"
-            >
-              Fleet
             </button>
             <button 
               onClick={() => scrollToSection('contact')}

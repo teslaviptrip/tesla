@@ -1,14 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Shield, Clock, Star } from "lucide-react";
 import heroImage from "@/assets/hero-tesla.jpg";
+import { useBooking } from "@/contexts/BookingContext";
 
 const Hero = () => {
-  const scrollToContact = () => {
-    const element = document.getElementById('contact');
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
+  const { openBookingDialog } = useBooking();
 
   return (
     <section id="home" className="hero-section">
@@ -65,7 +61,7 @@ const Hero = () => {
             <Button 
               size="lg" 
               className="px-8 py-4 text-lg electric-glow hover-glow"
-              onClick={scrollToContact}
+              onClick={() => openBookingDialog()}
             >
               Book Your Ride
               <ArrowRight className="w-5 h-5 ml-2" />

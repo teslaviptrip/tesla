@@ -4,14 +4,21 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { LanguageProvider } from "@/contexts/LanguageContext";
+import { BookingProvider, useBooking } from "@/contexts/BookingContext";
+import BookingDialog from "@/components/BookingDialog";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 
-const queryClient = new QueryClient();
+const AppContent = () => {
+  const { isOpen, selectedService, setIsOpen } = useBooking();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <LanguageProvider>
+  return (
+    <>
+      <BookingDialog 
+        open={isOpen} 
+        onOpenChange={setIsOpen}
+        defaultService={selectedService}
+      />
       <TooltipProvider>
         <Toaster />
         <Sonner />
@@ -23,6 +30,18 @@ const App = () => (
           </Routes>
         </BrowserRouter>
       </TooltipProvider>
+    </>
+  );
+};
+
+const queryClient = new QueryClient();
+
+const App = () => (
+  <QueryClientProvider client={queryClient}>
+    <LanguageProvider>
+      <BookingProvider>
+        <AppContent />
+      </BookingProvider>
     </LanguageProvider>
   </QueryClientProvider>
 );

@@ -9,10 +9,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useLanguage, Language } from "@/contexts/LanguageContext";
+import { useBooking } from "@/contexts/BookingContext";
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { language, setLanguage } = useLanguage();
+  const { openBookingDialog } = useBooking();
 
   const languageNames: Record<Language, string> = {
     en: "EN",
@@ -80,7 +82,7 @@ const Navigation = () => {
             
             <Button 
               className="electric-glow hover-glow"
-              onClick={() => scrollToSection('contact')}
+              onClick={() => openBookingDialog()}
             >
               Book Now
             </Button>
@@ -138,7 +140,7 @@ const Navigation = () => {
             
             <Button 
               className="w-full electric-glow"
-              onClick={() => scrollToSection('contact')}
+              onClick={() => openBookingDialog()}
             >
               Book Now
             </Button>

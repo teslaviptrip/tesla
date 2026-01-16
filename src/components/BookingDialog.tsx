@@ -314,8 +314,8 @@ Submitted: ${new Date().toLocaleString()}
     switch (currentStep) {
       case 1:
         return (
-          <div className="space-y-6 h-full flex flex-col justify-center">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="space-y-3 md:space-y-6 h-full flex flex-col justify-center">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-4">
               {services.map((service) => {
                 const Icon = service.icon;
                 const isSelected = formData.service === service.id;
@@ -323,26 +323,26 @@ Submitted: ${new Date().toLocaleString()}
                   <Card
                     key={service.id}
                     className={cn(
-                      "p-4 cursor-pointer transition-all duration-200 hover:scale-105 hover:shadow-lg",
+                      "p-2 md:p-4 cursor-pointer transition-all duration-200 hover:scale-105 hover:shadow-lg",
                       isSelected 
                         ? "ring-2 ring-primary bg-primary/10" 
                         : "hover:border-primary/50"
                     )}
                     onClick={() => handleServiceSelect(service.id)}
                   >
-                    <div className="flex items-start gap-3">
+                    <div className="flex items-start gap-2 md:gap-3">
                       <div className={cn(
-                        "p-3 rounded-lg bg-primary/10 border border-primary/20",
+                        "p-2 md:p-3 rounded-lg bg-primary/10 border border-primary/20 flex-shrink-0",
                         isSelected ? "ring-2 ring-primary bg-primary/20" : ""
                       )}>
-                        <Icon className="w-5 h-5 text-primary" />
+                        <Icon className="w-4 h-4 md:w-5 md:h-5 text-primary" />
                       </div>
-                      <div className="flex-1">
-                        <h4 className="font-semibold text-foreground mb-1">{service.name}</h4>
-                        <p className="text-xs text-muted-foreground mb-3">{service.description}</p>
+                      <div className="flex-1 min-w-0">
+                        <h4 className="font-semibold text-foreground mb-1 text-sm md:text-base">{service.name}</h4>
+                        <p className="text-xs text-muted-foreground mb-2 md:mb-3">{service.description}</p>
                         {isSelected && (
-                          <div className="flex items-center gap-2 text-primary text-sm">
-                            <Check className="w-4 h-4" />
+                          <div className="flex items-center gap-1 md:gap-2 text-primary text-xs md:text-sm">
+                            <Check className="w-3 h-3 md:w-4 md:h-4" />
                             <span>Selected</span>
                           </div>
                         )}
@@ -384,22 +384,8 @@ Submitted: ${new Date().toLocaleString()}
 
         return (
           <div className="space-y-6 h-full flex flex-col justify-center">
-            <Card className="p-4 mb-4 bg-muted/30">
-              <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-primary/10 border border-primary/20">
-                  {(() => {
-                    const Icon = selectedService.icon;
-                    return <Icon className="w-4 h-4 text-primary" />;
-                  })()}
-                </div>
-                <div>
-                  <p className="text-xs text-muted-foreground">Selected Service</p>
-                  <p className="font-semibold text-foreground">{selectedService.name}</p>
-                </div>
-              </div>
-            </Card>
             <div className="space-y-3">
-              <Label className="text-sm font-medium">Available Options</Label>
+              <h3 className="text-sm font-medium text-muted-foreground">{selectedService.name}</h3>
               <div className="grid grid-cols-1 gap-3">
                 {selectedService.options.map((option, index) => (
                   <Card

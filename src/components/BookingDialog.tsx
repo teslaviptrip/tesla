@@ -276,34 +276,25 @@ ${t.booking.email.footer}
       duration: 10000
     });
 
-      setTimeout(() => {
-        onOpenChange(false);
-        setCurrentStep(1);
-        setSelectedDate(undefined);
-        setCalendarOpen(false);
-        setFormData({
-          name: '',
-          email: '',
-          phone: '',
-          service: defaultService || '',
-          serviceOption: '',
-          pickupLocation: '',
-          destination: '',
-          date: '',
-          time: '',
-          passengers: '1',
-          message: ''
-        });
-      }, 2000);
-    } catch (error) {
-      console.error('Error sending booking email:', error);
-      toast({
-        title: t.ooking.messages.error,
-        description: t.ooking.messages.errorDesc,
-        variant: "destructive",
-        duration: 10000
+    setTimeout(() => {
+      onOpenChange(false);
+      setCurrentStep(1);
+      setSelectedDate(undefined);
+      setCalendarOpen(false);
+      setFormData({
+        name: '',
+        email: '',
+        phone: '',
+        service: defaultService || '',
+        serviceOption: '',
+        pickupLocation: '',
+        destination: '',
+        date: '',
+        time: '',
+        passengers: '1',
+        message: ''
       });
-    }
+    }, 2000);
   };
 
   const renderStepContent = () => {

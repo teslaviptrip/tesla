@@ -241,25 +241,25 @@ const BookingDialog = ({ open, onOpenChange, defaultService }: BookingDialogProp
   // Security: Client-side validation function
   const validateForm = (): { valid: boolean; error?: string } => {
     if (!formData.name || formData.name.trim().length < 2) {
-      return { valid: false, error: t.ooking.fields.name };
+      return { valid: false, error: t.booking.fields.name };
     }
     if (!formData.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      return { valid: false, error: t.ooking.fields.email };
+      return { valid: false, error: t.booking.fields.email };
     }
     if (!formData.phone || formData.phone.trim().length < 7) {
-      return { valid: false, error: t.ooking.fields.phone };
+      return { valid: false, error: t.booking.fields.phone };
     }
     if (!formData.pickupLocation || formData.pickupLocation.trim().length < 3) {
-      return { valid: false, error: t.ooking.fields.pickupLocation };
+      return { valid: false, error: t.booking.fields.pickupLocation };
     }
     if (!formData.destination || formData.destination.trim().length < 3) {
-      return { valid: false, error: t.ooking.fields.destination };
+      return { valid: false, error: t.booking.fields.destination };
     }
     if (!formData.date) {
-      return { valid: false, error: t.ooking.fields.date };
+      return { valid: false, error: t.booking.fields.date };
     }
     if (!formData.time) {
-      return { valid: false, error: t.ooking.fields.time };
+      return { valid: false, error: t.booking.fields.time };
     }
     return { valid: true };
   };
@@ -298,8 +298,8 @@ ${t.booking.email.footer}
     const validation = validateForm();
     if (!validation.valid) {
       toast({
-        title: t.ooking.messages.error,
-        description: validation.error ? `${validation.error} ${t.ooking.fields.required}` : t.ooking.messages.errorDesc,
+        title: t.booking.messages.error,
+        description: validation.error ? `${validation.error} ${t.booking.fields.required}` : t.booking.messages.errorDesc,
         variant: "destructive",
         duration: 5000
       });
@@ -324,33 +324,33 @@ ${t.booking.email.footer}
         passengers: formData.passengers,
         message: formData.message.trim(),
         // Translation keys for email (with different names to avoid duplicates)
-        bookingDetails: t.ooking.email.ookingDetails,
-        serviceLabel: t.ooking.email.service,
-        optionLabel: t.ooking.email.option,
-        tripDetails: t.ooking.review.tripDetails,
-        pickupLabel: t.ooking.email.pickup,
-        destinationLabel: t.ooking.email.destination,
-        dateLabel: t.ooking.email.date,
-        timeLabel: t.ooking.email.time,
-        passengersLabel: t.ooking.email.passengers,
-        contact: t.ooking.email.contact,
-        nameLabel: t.ooking.email.name,
-        emailLabel: t.ooking.email.email,
-        phoneLabel: t.ooking.email.phone,
-        messageLabel: t.ooking.email.message,
-        footer: t.ooking.email.footer,
-        subject: t.ooking.email.subject,
-        greeting: t.ooking.email.greeting,
-        optional: t.ooking.fields.optional,
+        bookingDetails: t.booking.email.ookingDetails,
+        serviceLabel: t.booking.email.service,
+        optionLabel: t.booking.email.option,
+        tripDetails: t.booking.review.tripDetails,
+        pickupLabel: t.booking.email.pickup,
+        destinationLabel: t.booking.email.destination,
+        dateLabel: t.booking.email.date,
+        timeLabel: t.booking.email.time,
+        passengersLabel: t.booking.email.passengers,
+        contact: t.booking.email.contact,
+        nameLabel: t.booking.email.name,
+        emailLabel: t.booking.email.email,
+        phoneLabel: t.booking.email.phone,
+        messageLabel: t.booking.email.message,
+        footer: t.booking.email.footer,
+        subject: t.booking.email.subject,
+        greeting: t.booking.email.greeting,
+        optional: t.booking.fields.optional,
       };
 
       const confirmationEmail = {
-        subject: t.ooking.confirmation.subject,
-        greeting: t.ooking.confirmation.greeting,
-        thankYou: t.ooking.confirmation.thankYou,
-        message: t.ooking.confirmation.message,
-        nextSteps: t.ooking.confirmation.nextSteps,
-        footer: t.ooking.confirmation.footer,
+        subject: t.booking.confirmation.subject,
+        greeting: t.booking.confirmation.greeting,
+        thankYou: t.booking.confirmation.thankYou,
+        message: t.booking.confirmation.message,
+        nextSteps: t.booking.confirmation.nextSteps,
+        footer: t.booking.confirmation.footer,
       };
 
       // Call API endpoint
@@ -401,8 +401,8 @@ ${t.booking.email.footer}
     } catch (error: any) {
       console.error('Error submitting booking:', error);
       toast({
-        title: t.ooking.messages.error,
-        description: error.message || t.ooking.messages.errorDesc,
+        title: t.booking.messages.error,
+        description: error.message || t.booking.messages.errorDesc,
         variant: "destructive",
         duration: 10000
       });

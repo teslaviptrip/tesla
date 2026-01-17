@@ -1,7 +1,15 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
+import { fileURLToPath } from "url";
 import type { Plugin } from "vite";
+import { config } from "dotenv";
+
+// Load environment variables from .env file
+config();
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Plugin to handle API routes in dev mode
 function apiPlugin(): Plugin {
@@ -13,9 +21,24 @@ function apiPlugin(): Plugin {
           try {
             const urlPath = req.url.replace("/api/", "").split("?")[0];
             
-            // Import the API handler
-            const handlerModule = await import(`./api/${urlPath}.ts`);
+            // Use Vite's ssrLoadModule - path should be relative to project root
+            // Try different path formats
+            let handlerModule;
+            try {
+              handlerModule = await server.ssrLoadModule(`./api/${urlPath}.ts`);
+            } catch (e1) {
+              try {
+                handlerModule = await server.ssrLoadModule(`/api/${urlPath}.ts`);
+              } catch (e2) {
+                const apiPath = path.resolve(__dirname, `./api/${urlPath}.ts`);
+                handlerModule = await server.ssrLoadModule(apiPath);
+              }
+            }
             const handler = handlerModule.default;
+            
+            if (!handler) {
+              throw new Error("Handler not found in module");
+            }
             
             if (handler) {
               // Read request body
@@ -34,6 +57,9 @@ function apiPlugin(): Plugin {
                     headers: req.headers,
                     body: parsedBody,
                     query: new URL(req.url || "", `http://${req.headers.host}`).searchParams,
+                    socket: {
+                      remoteAddress: req.socket?.remoteAddress || req.headers['x-forwarded-for']?.split(',')[0] || req.headers['x-real-ip'] || 'unknown',
+                    },
                   };
                   
                   const mockRes: any = {
@@ -60,19 +86,26 @@ function apiPlugin(): Plugin {
                   await handler(mockReq, mockRes);
                 } catch (error: any) {
                   console.error("API Error:", error);
+                  console.error("Error stack:", error.stack);
                   res.statusCode = 500;
                   res.setHeader("Content-Type", "application/json");
-                  res.end(JSON.stringify({ error: error.message || "Internal server error" }));
+                  res.end(JSON.stringify({ 
+                    error: error.message || "Internal server error",
+                    details: process.env.NODE_ENV === 'development' ? error.stack : undefined
+                  }));
                 }
               });
             } else {
               next();
             }
           } catch (error: any) {
+            const urlPath = req.url?.replace("/api/", "").split("?")[0] || "unknown";
             console.error("API Import Error:", error);
+            console.error("URL Path:", urlPath);
+            console.error("Error details:", error.message, error.stack);
             res.statusCode = 404;
             res.setHeader("Content-Type", "application/json");
-            res.end(JSON.stringify({ error: "API endpoint not found" }));
+            res.end(JSON.stringify({ error: "API endpoint not found", details: error.message }));
           }
         } else {
           next();
@@ -93,5 +126,8 @@ export default defineConfig({
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },
+  },
+  ssr: {
+    noExternal: ["resend"],
   },
 });

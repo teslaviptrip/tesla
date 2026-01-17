@@ -1,7 +1,18 @@
 import { Resend } from 'resend';
+import { config } from 'dotenv';
+
+// Load environment variables
+config();
 
 // Booking email handler with security features
-const resend = new Resend(process.env.RESEND_API_KEY);
+// Lazy initialization to avoid errors during module import in dev mode
+const getResend = () => {
+  const apiKey = process.env.RESEND_API_KEY || '';
+  if (!apiKey) {
+    throw new Error('RESEND_API_KEY environment variable is not set');
+  }
+  return new Resend(apiKey);
+};
 
 // Rate limiting storage (in production, use Redis or similar)
 const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
@@ -155,6 +166,7 @@ export default async function handler(req: any, res: any) {
     const adminEmails = ['teslaservis149@gmail.com', 'teslaviptrip@gmail.com'];
 
     // Send confirmation email to customer
+    const resend = getResend();
     await resend.emails.send({
       from: 'Tesla VIP Trip <onboarding@resend.dev>',
       to: sanitizedCustomerEmail,
@@ -230,7 +242,11 @@ export default async function handler(req: any, res: any) {
     return res.status(200).json({ success: true, message: 'Emails sent successfully' });
   } catch (error: any) {
     console.error('Error sending email:', error);
-    // Security: Don't expose internal error details
-    return res.status(500).json({ error: 'Failed to send email. Please try again later.' });
+    console.error('Error details:', error.message, error.stack);
+    // Security: Don't expose internal error details in production
+    const errorMessage = process.env.NODE_ENV === 'development' 
+      ? error.message || 'Failed to send email. Please try again later.'
+      : 'Failed to send email. Please try again later.';
+    return res.status(500).json({ error: errorMessage });
   }
 }

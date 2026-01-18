@@ -311,6 +311,12 @@ export default async function handler(req: any, res: any) {
     for (const adminEmail of adminEmails) {
       console.log('[API] Sending notification email to admin:', adminEmail);
       try {
+        console.log('[API] Attempting to send admin email with params:', {
+          from: fromEmail,
+          to: adminEmail,
+          subject: `${sanitizedBookingData.subject || 'New Booking Request'} - ${sanitizedBookingData.name}`
+        });
+        
         const adminEmailResult = await resend.emails.send({
           from: fromEmail,
         to: adminEmail,
@@ -319,19 +325,33 @@ export default async function handler(req: any, res: any) {
           <html>
             <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
               <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
-                  <h2 style="color: #fbbf24;">${sanitizedBookingData.greeting || 'New Booking Request'}</h2>
-                  ${bookingDetailsHtml}
+                <h2 style="color: #fbbf24;">${sanitizedBookingData.greeting || 'New Booking Request'}</h2>
+                ${bookingDetailsHtml}
               </div>
             </body>
           </html>
         `,
-      });
+        });
         
+        console.log('[API] Admin email Resend response type:', typeof adminEmailResult);
         console.log('[API] Admin email Resend response:', JSON.stringify(adminEmailResult, null, 2));
+        console.log('[API] Admin email Resend response keys:', adminEmailResult ? Object.keys(adminEmailResult) : 'null/undefined');
+        
+        // Check if response has error structure
+        if (adminEmailResult && 'error' in adminEmailResult) {
+          console.error('[API] Resend returned error in response:', adminEmailResult.error);
+          throw new Error(`Resend API error: ${JSON.stringify(adminEmailResult.error)}`);
+        }
         
         if (!adminEmailResult || !adminEmailResult.id) {
-          console.error('[API] Admin email response missing ID:', adminEmailResult);
-          throw new Error('Resend API returned invalid response - missing email ID');
+          console.error('[API] Admin email response missing ID. Full response:', adminEmailResult);
+          console.error('[API] Response structure:', {
+            hasResult: !!adminEmailResult,
+            isObject: typeof adminEmailResult === 'object',
+            keys: adminEmailResult ? Object.keys(adminEmailResult) : [],
+            value: adminEmailResult
+          });
+          throw new Error(`Resend API returned invalid response - missing email ID. Response: ${JSON.stringify(adminEmailResult)}`);
         }
         
         console.log('[API] Admin email sent successfully:', {

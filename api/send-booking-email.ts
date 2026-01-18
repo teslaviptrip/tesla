@@ -125,9 +125,16 @@ export default async function handler(req: any, res: any) {
   }
 
   try {
+    console.log('[API] Request received:', {
+      method: req.method,
+      contentType: req.headers['content-type'],
+      hasBody: !!req.body
+    });
+
     // Security: Validate Content-Type
     const contentType = req.headers['content-type'];
     if (!contentType || !contentType.includes('application/json')) {
+      console.error('[API] Invalid content type:', contentType);
       return res.status(400).json({ error: 'Invalid content type' });
     }
 
@@ -139,9 +146,18 @@ export default async function handler(req: any, res: any) {
       confirmationEmail 
     } = req.body;
 
+    console.log('[API] Request data:', {
+      customerEmail,
+      customerName,
+      language,
+      hasBookingData: !!bookingData,
+      hasConfirmationEmail: !!confirmationEmail
+    });
+
     // Security: Validate all required fields
     const validation = validateBookingData({ customerEmail, customerName, bookingData });
     if (!validation.valid) {
+      console.error('[API] Validation failed:', validation.errors);
       return res.status(400).json({ error: 'Validation failed', details: validation.errors });
     }
 
@@ -174,10 +190,19 @@ export default async function handler(req: any, res: any) {
     // 5. Click Verify in Resend
     // 6. Set RESEND_FROM_EMAIL in .env: RESEND_FROM_EMAIL="Tesla VIP Trip <info@yourdomain.com>"
     const fromEmail = process.env.RESEND_FROM_EMAIL || 'Tesla VIP Trip <onboarding@resend.dev>';
+    
+    console.log('[API] Email configuration:', {
+      fromEmail,
+      hasApiKey: !!process.env.RESEND_API_KEY,
+      customerEmail: sanitizedCustomerEmail,
+      adminEmails
+    });
 
     // Send confirmation email to customer
     const resend = getResend();
-    await resend.emails.send({
+    console.log('[API] Sending confirmation email to customer:', sanitizedCustomerEmail);
+    
+    const customerEmailResult = await resend.emails.send({
       from: fromEmail,
       to: sanitizedCustomerEmail,
       subject: confirmationEmail?.subject || 'Booking Confirmation',
@@ -204,6 +229,11 @@ export default async function handler(req: any, res: any) {
           </body>
         </html>
       `,
+    });
+    
+    console.log('[API] Customer email sent successfully:', {
+      id: customerEmailResult?.id,
+      to: sanitizedCustomerEmail
     });
 
     // Send booking notification to admin emails
@@ -232,7 +262,8 @@ export default async function handler(req: any, res: any) {
     `;
 
     for (const adminEmail of adminEmails) {
-      await resend.emails.send({
+      console.log('[API] Sending notification email to admin:', adminEmail);
+      const adminEmailResult = await resend.emails.send({
         from: fromEmail,
         to: adminEmail,
         subject: `${sanitizedBookingData.subject || 'New Booking Request'} - ${sanitizedBookingData.name}`,
@@ -247,15 +278,36 @@ export default async function handler(req: any, res: any) {
           </html>
         `,
       });
+      console.log('[API] Admin email sent successfully:', {
+        id: adminEmailResult?.id,
+        to: adminEmail
+      });
     }
 
+    console.log('[API] All emails sent successfully');
     return res.status(200).json({ success: true, message: 'Emails sent successfully' });
   } catch (error: any) {
-    console.error('Error sending email:', error);
-    console.error('Error details:', error.message, error.stack);
+    console.error('[API] Error sending email:', error);
+    console.error('[API] Error details:', {
+      message: error.message,
+      stack: error.stack,
+      response: error.response?.data,
+      status: error.response?.status,
+      name: error.name
+    });
+    
+    // Log Resend-specific errors
+    if (error.response) {
+      console.error('[API] Resend API response:', {
+        status: error.response.status,
+        statusText: error.response.statusText,
+        data: error.response.data
+      });
+    }
+    
     // Security: Don't expose internal error details in production
     const errorMessage = process.env.NODE_ENV === 'development' 
-      ? error.message || 'Failed to send email. Please try again later.'
+      ? `${error.message || 'Failed to send email'}${error.response?.data ? ` - ${JSON.stringify(error.response.data)}` : ''}`
       : 'Failed to send email. Please try again later.';
     return res.status(500).json({ error: errorMessage });
   }

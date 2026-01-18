@@ -354,6 +354,13 @@ ${t.booking.email.footer}
       };
 
       // Call API endpoint
+      console.log('[BookingDialog] Submitting booking form:', {
+        customerEmail: formData.email.trim().toLowerCase(),
+        customerName: formData.name.trim(),
+        hasBookingData: !!bookingData,
+        hasConfirmationEmail: !!confirmationEmail
+      });
+
       const response = await fetch('/api/send-booking-email', {
         method: 'POST',
         headers: {
@@ -368,10 +375,16 @@ ${t.booking.email.footer}
         }),
       });
 
+      console.log('[BookingDialog] API response status:', response.status, response.statusText);
+
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
+        console.error('[BookingDialog] API error:', errorData);
         throw new Error(errorData.error || 'Failed to send booking request');
       }
+
+      const responseData = await response.json().catch(() => ({}));
+      console.log('[BookingDialog] API success:', responseData);
 
     toast({
       title: t.booking.messages.success,

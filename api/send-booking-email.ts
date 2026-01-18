@@ -352,23 +352,28 @@ export default async function handler(req: any, res: any) {
           console.warn('[API] Admin email failed but continuing with customer email success');
         }
         
-        if (!adminEmailResult || !adminEmailResult.id) {
+        // Resend API returns { data: { id: "..." }, error: null }
+        const adminEmailId = adminEmailResult?.data?.id || adminEmailResult?.id;
+        
+        if (!adminEmailResult || !adminEmailId) {
           console.error('[API] Admin email response missing ID. Full response:', adminEmailResult);
           console.error('[API] Response structure:', {
             hasResult: !!adminEmailResult,
             isObject: typeof adminEmailResult === 'object',
             keys: adminEmailResult ? Object.keys(adminEmailResult) : [],
+            hasData: !!adminEmailResult?.data,
+            dataKeys: adminEmailResult?.data ? Object.keys(adminEmailResult.data) : [],
             value: adminEmailResult
           });
           // Don't throw - just log warning, customer email was successful
           console.warn('[API] Admin email failed but customer email was successful - continuing');
+        } else {
+          console.log('[API] Admin email sent successfully:', {
+            id: adminEmailId,
+            to: adminEmail,
+            from: fromEmail
+          });
         }
-        
-        console.log('[API] Admin email sent successfully:', {
-          id: adminEmailResult.id,
-          to: adminEmail,
-          from: fromEmail
-        });
       } catch (emailError: any) {
         console.error('[API] Error sending admin email to', adminEmail, ':', emailError);
         console.error('[API] Admin email error details:', {

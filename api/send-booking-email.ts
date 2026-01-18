@@ -201,26 +201,29 @@ export default async function handler(req: any, res: any) {
     // Send confirmation email to customer
     const resend = getResend();
     console.log('[API] Sending confirmation email to customer:', sanitizedCustomerEmail);
+    console.log('[API] Using from email:', fromEmail);
     
-    const customerEmailResult = await resend.emails.send({
-      from: fromEmail,
-      to: sanitizedCustomerEmail,
-      subject: confirmationEmail?.subject || 'Booking Confirmation',
+    let customerEmailResult;
+    try {
+      customerEmailResult = await resend.emails.send({
+        from: fromEmail,
+        to: sanitizedCustomerEmail,
+        subject: confirmationEmail?.subject || 'Booking Confirmation',
       html: `
         <html>
           <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
             <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
-              <h2 style="color: #fbbf24;">${confirmationEmail?.greeting || 'Hello'} ${sanitizedCustomerName},</h2>
-              <h3 style="color: #1f2937;">${confirmationEmail?.thankYou || 'Thank you for your booking request'}</h3>
-              <p>${confirmationEmail?.message || 'We have received your booking request and will contact you shortly.'}</p>
-              <p><strong>${confirmationEmail?.nextSteps || 'Next Steps:'}</strong></p>
+                <h2 style="color: #fbbf24;">${confirmationEmail?.greeting || 'Hello'} ${sanitizedCustomerName},</h2>
+                <h3 style="color: #1f2937;">${confirmationEmail?.thankYou || 'Thank you for your booking request'}</h3>
+                <p>${confirmationEmail?.message || 'We have received your booking request and will contact you shortly.'}</p>
+                <p><strong>${confirmationEmail?.nextSteps || 'Next Steps:'}</strong></p>
               <ul>
                 <li>Our team will review your booking request</li>
                 <li>We'll contact you within 15 minutes to confirm details</li>
                 <li>You'll receive a final confirmation email</li>
               </ul>
               <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 20px 0;">
-              <p style="color: #6b7280; font-size: 14px;">${confirmationEmail?.footer || 'Best regards, Tesla VIP Trip Team'}</p>
+                <p style="color: #6b7280; font-size: 14px;">${confirmationEmail?.footer || 'Best regards, Tesla VIP Trip Team'}</p>
               <p style="color: #6b7280; font-size: 12px; margin-top: 20px;">
                 Tesla VIP Trip<br>
                 Vienna - Bratislava - Budapest
@@ -230,11 +233,28 @@ export default async function handler(req: any, res: any) {
         </html>
       `,
     });
-    
-    console.log('[API] Customer email sent successfully:', {
-      id: customerEmailResult?.id,
-      to: sanitizedCustomerEmail
-    });
+      
+      console.log('[API] Customer email Resend response:', JSON.stringify(customerEmailResult, null, 2));
+      
+      if (!customerEmailResult || !customerEmailResult.id) {
+        console.error('[API] Customer email response missing ID:', customerEmailResult);
+        throw new Error('Resend API returned invalid response - missing email ID');
+      }
+      
+      console.log('[API] Customer email sent successfully:', {
+        id: customerEmailResult.id,
+        to: sanitizedCustomerEmail,
+        from: fromEmail
+      });
+    } catch (emailError: any) {
+      console.error('[API] Error sending customer email:', emailError);
+      console.error('[API] Customer email error details:', {
+        message: emailError.message,
+        response: emailError.response?.data,
+        status: emailError.response?.status
+      });
+      throw emailError; // Re-throw to be caught by outer catch
+    }
 
     // Send booking notification to admin emails
     const bookingDetailsHtml = `
@@ -263,25 +283,44 @@ export default async function handler(req: any, res: any) {
 
     for (const adminEmail of adminEmails) {
       console.log('[API] Sending notification email to admin:', adminEmail);
-      const adminEmailResult = await resend.emails.send({
-        from: fromEmail,
+      try {
+        const adminEmailResult = await resend.emails.send({
+          from: fromEmail,
         to: adminEmail,
-        subject: `${sanitizedBookingData.subject || 'New Booking Request'} - ${sanitizedBookingData.name}`,
+          subject: `${sanitizedBookingData.subject || 'New Booking Request'} - ${sanitizedBookingData.name}`,
         html: `
           <html>
             <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
               <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
-                <h2 style="color: #fbbf24;">${sanitizedBookingData.greeting || 'New Booking Request'}</h2>
-                ${bookingDetailsHtml}
+                  <h2 style="color: #fbbf24;">${sanitizedBookingData.greeting || 'New Booking Request'}</h2>
+                  ${bookingDetailsHtml}
               </div>
             </body>
           </html>
         `,
       });
-      console.log('[API] Admin email sent successfully:', {
-        id: adminEmailResult?.id,
-        to: adminEmail
-      });
+        
+        console.log('[API] Admin email Resend response:', JSON.stringify(adminEmailResult, null, 2));
+        
+        if (!adminEmailResult || !adminEmailResult.id) {
+          console.error('[API] Admin email response missing ID:', adminEmailResult);
+          throw new Error('Resend API returned invalid response - missing email ID');
+        }
+        
+        console.log('[API] Admin email sent successfully:', {
+          id: adminEmailResult.id,
+          to: adminEmail,
+          from: fromEmail
+        });
+      } catch (emailError: any) {
+        console.error('[API] Error sending admin email to', adminEmail, ':', emailError);
+        console.error('[API] Admin email error details:', {
+          message: emailError.message,
+          response: emailError.response?.data,
+          status: emailError.response?.status
+        });
+        throw emailError; // Re-throw to be caught by outer catch
+      }
     }
 
     console.log('[API] All emails sent successfully');

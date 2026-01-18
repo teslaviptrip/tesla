@@ -257,19 +257,24 @@ export default async function handler(req: any, res: any) {
         throw new Error(`Resend API error: ${JSON.stringify(customerEmailResult.error)}`);
       }
       
-      if (!customerEmailResult || !customerEmailResult.id) {
+      // Resend API returns { data: { id: "..." }, error: null }
+      const emailId = customerEmailResult?.data?.id || customerEmailResult?.id;
+      
+      if (!customerEmailResult || !emailId) {
         console.error('[API] Customer email response missing ID. Full response:', customerEmailResult);
         console.error('[API] Response structure:', {
           hasResult: !!customerEmailResult,
           isObject: typeof customerEmailResult === 'object',
           keys: customerEmailResult ? Object.keys(customerEmailResult) : [],
+          hasData: !!customerEmailResult?.data,
+          dataKeys: customerEmailResult?.data ? Object.keys(customerEmailResult.data) : [],
           value: customerEmailResult
         });
         throw new Error(`Resend API returned invalid response - missing email ID. Response: ${JSON.stringify(customerEmailResult)}`);
       }
       
       console.log('[API] Customer email sent successfully:', {
-        id: customerEmailResult.id,
+        id: emailId,
         to: sanitizedCustomerEmail,
         from: fromEmail
       });

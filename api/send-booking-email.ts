@@ -391,30 +391,50 @@ export default async function handler(req: any, res: any) {
       });
     }
     
+    // Log full error details for debugging
+    const errorDetails: any = {
+      message: error.message || 'Unknown error',
+      name: error.name,
+      stack: error.stack
+    };
+    
+    if (error.response) {
+      errorDetails.resendStatus = error.response.status;
+      errorDetails.resendStatusText = error.response.statusText;
+      errorDetails.resendData = error.response.data;
+    }
+    
+    // Also check for Resend SDK specific error format
+    if (error.error) {
+      errorDetails.resendError = error.error;
+    }
+    
+    console.error('[API] Full error object:', JSON.stringify(errorDetails, null, 2));
+    
     // Security: Don't expose internal error details in production
     // But in development, show full error details for debugging
     let errorMessage = 'Failed to send email. Please try again later.';
     
-    if (process.env.NODE_ENV === 'development' || process.env.VERCEL_ENV === 'development') {
-      const details: any = {
-        message: error.message || 'Unknown error',
-        name: error.name
-      };
+    if (process.env.NODE_ENV === 'development' || process.env.VERCEL_ENV === 'development' || process.env.VERCEL === '1') {
+      // On Vercel, always show detailed errors for debugging
+      errorMessage = `Email sending failed: ${errorDetails.message}`;
       
-      if (error.response) {
-        details.resendStatus = error.response.status;
-        details.resendStatusText = error.response.statusText;
-        details.resendData = error.response.data;
+      if (errorDetails.resendData) {
+        errorMessage += ` - Resend API: ${JSON.stringify(errorDetails.resendData)}`;
+      } else if (errorDetails.resendStatus) {
+        errorMessage += ` - Resend status: ${errorDetails.resendStatus} ${errorDetails.resendStatusText}`;
       }
       
-      if (error.message) {
-        details.message = error.message;
+      if (errorDetails.resendError) {
+        errorMessage += ` - Resend error: ${JSON.stringify(errorDetails.resendError)}`;
       }
-      
-      errorMessage = `Email sending failed: ${details.message}${details.resendData ? ` - Resend: ${JSON.stringify(details.resendData)}` : ''}`;
     }
     
     console.error('[API] Final error response:', errorMessage);
-    return res.status(500).json({ error: errorMessage });
+    return res.status(500).json({ 
+      error: errorMessage,
+      // Include details in development/Vercel
+      ...(process.env.NODE_ENV === 'development' || process.env.VERCEL_ENV === 'development' || process.env.VERCEL === '1' ? { details: errorDetails } : {})
+    });
   }
 }

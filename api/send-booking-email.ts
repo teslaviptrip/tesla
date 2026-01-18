@@ -251,8 +251,8 @@ export default async function handler(req: any, res: any) {
       console.log('[API] Customer email Resend response:', JSON.stringify(customerEmailResult, null, 2));
       console.log('[API] Customer email Resend response keys:', customerEmailResult ? Object.keys(customerEmailResult) : 'null/undefined');
       
-      // Check if response has error structure
-      if (customerEmailResult && 'error' in customerEmailResult) {
+      // Check if response has error structure (error must exist and not be null)
+      if (customerEmailResult && 'error' in customerEmailResult && customerEmailResult.error !== null && customerEmailResult.error !== undefined) {
         console.error('[API] Resend returned error in response:', customerEmailResult.error);
         throw new Error(`Resend API error: ${JSON.stringify(customerEmailResult.error)}`);
       }
@@ -340,10 +340,11 @@ export default async function handler(req: any, res: any) {
         console.log('[API] Admin email Resend response:', JSON.stringify(adminEmailResult, null, 2));
         console.log('[API] Admin email Resend response keys:', adminEmailResult ? Object.keys(adminEmailResult) : 'null/undefined');
         
-        // Check if response has error structure
-        if (adminEmailResult && 'error' in adminEmailResult) {
+        // Check if response has error structure (error must exist and not be null)
+        if (adminEmailResult && 'error' in adminEmailResult && adminEmailResult.error !== null && adminEmailResult.error !== undefined) {
           console.error('[API] Resend returned error in response:', adminEmailResult.error);
-          throw new Error(`Resend API error: ${JSON.stringify(adminEmailResult.error)}`);
+          // Don't throw - just log, continue with other emails
+          console.warn('[API] Admin email failed but continuing with customer email success');
         }
         
         if (!adminEmailResult || !adminEmailResult.id) {
@@ -354,7 +355,8 @@ export default async function handler(req: any, res: any) {
             keys: adminEmailResult ? Object.keys(adminEmailResult) : [],
             value: adminEmailResult
           });
-          throw new Error(`Resend API returned invalid response - missing email ID. Response: ${JSON.stringify(adminEmailResult)}`);
+          // Don't throw - just log warning, customer email was successful
+          console.warn('[API] Admin email failed but customer email was successful - continuing');
         }
         
         console.log('[API] Admin email sent successfully:', {
@@ -369,7 +371,9 @@ export default async function handler(req: any, res: any) {
           response: emailError.response?.data,
           status: emailError.response?.status
         });
-        throw emailError; // Re-throw to be caught by outer catch
+        // Don't throw - just log warning, customer email was successful
+        // Continue with other admin emails
+        console.warn('[API] Admin email failed but customer email was successful - continuing with next admin email');
       }
     }
 

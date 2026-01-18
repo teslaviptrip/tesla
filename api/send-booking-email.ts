@@ -165,10 +165,20 @@ export default async function handler(req: any, res: any) {
 
     const adminEmails = ['teslaservis149@gmail.com', 'teslaviptrip@gmail.com'];
 
+    // Get sender email from environment variable or use default
+    // To use your own domain:
+    // 1. Go to Resend Dashboard > Domains
+    // 2. Add your domain
+    // 3. Copy the 3 DKIM records from Resend
+    // 4. Add them to your DNS settings (where you bought the domain or Cloudflare)
+    // 5. Click Verify in Resend
+    // 6. Set RESEND_FROM_EMAIL in .env: RESEND_FROM_EMAIL="Tesla VIP Trip <info@yourdomain.com>"
+    const fromEmail = process.env.RESEND_FROM_EMAIL || 'Tesla VIP Trip <onboarding@resend.dev>';
+
     // Send confirmation email to customer
     const resend = getResend();
     await resend.emails.send({
-      from: 'Tesla VIP Trip <onboarding@resend.dev>',
+      from: fromEmail,
       to: sanitizedCustomerEmail,
       subject: confirmationEmail?.subject || 'Booking Confirmation',
       html: `
@@ -223,7 +233,7 @@ export default async function handler(req: any, res: any) {
 
     for (const adminEmail of adminEmails) {
       await resend.emails.send({
-        from: 'Tesla VIP Trip <onboarding@resend.dev>',
+        from: fromEmail,
         to: adminEmail,
         subject: `${sanitizedBookingData.subject || 'New Booking Request'} - ${sanitizedBookingData.name}`,
         html: `

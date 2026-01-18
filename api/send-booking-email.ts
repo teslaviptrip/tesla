@@ -277,8 +277,11 @@ export default async function handler(req: any, res: any) {
       console.error('[API] Error sending customer email:', emailError);
       console.error('[API] Customer email error details:', {
         message: emailError.message,
+        name: emailError.name,
         response: emailError.response?.data,
-        status: emailError.response?.status
+        status: emailError.response?.status,
+        error: emailError.error,
+        fullError: JSON.stringify(emailError, Object.getOwnPropertyNames(emailError), 2)
       });
       throw emailError; // Re-throw to be caught by outer catch
     }

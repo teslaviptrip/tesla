@@ -379,8 +379,13 @@ ${t.booking.email.footer}
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        console.error('[BookingDialog] API error:', errorData);
-        throw new Error(errorData.error || 'Failed to send booking request');
+        console.error('[BookingDialog] API error response:', {
+          status: response.status,
+          statusText: response.statusText,
+          error: errorData
+        });
+        const errorMessage = errorData.error || `Failed to send booking request (${response.status})`;
+        throw new Error(errorMessage);
       }
 
       const responseData = await response.json().catch(() => ({}));

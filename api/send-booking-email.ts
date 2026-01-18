@@ -189,7 +189,14 @@ export default async function handler(req: any, res: any) {
     // 4. Add them to your DNS settings (where you bought the domain or Cloudflare)
     // 5. Click Verify in Resend
     // 6. Set RESEND_FROM_EMAIL in .env: RESEND_FROM_EMAIL="Tesla VIP Trip <info@yourdomain.com>"
-    const fromEmail = process.env.RESEND_FROM_EMAIL || 'Tesla VIP Trip <onboarding@resend.dev>';
+    let fromEmail = process.env.RESEND_FROM_EMAIL || 'Tesla VIP Trip <onboarding@resend.dev>';
+    
+    // Validate from email - Gmail addresses are not supported by Resend
+    // If RESEND_FROM_EMAIL contains Gmail, fall back to onboarding@resend.dev
+    if (fromEmail.includes('@gmail.com') || fromEmail.includes('@googlemail.com')) {
+      console.warn('[API] Warning: Gmail address detected in RESEND_FROM_EMAIL, using onboarding@resend.dev instead');
+      fromEmail = 'Tesla VIP Trip <onboarding@resend.dev>';
+    }
     
     console.log('[API] Email configuration:', {
       fromEmail,
@@ -345,9 +352,29 @@ export default async function handler(req: any, res: any) {
     }
     
     // Security: Don't expose internal error details in production
-    const errorMessage = process.env.NODE_ENV === 'development' 
-      ? `${error.message || 'Failed to send email'}${error.response?.data ? ` - ${JSON.stringify(error.response.data)}` : ''}`
-      : 'Failed to send email. Please try again later.';
+    // But in development, show full error details for debugging
+    let errorMessage = 'Failed to send email. Please try again later.';
+    
+    if (process.env.NODE_ENV === 'development' || process.env.VERCEL_ENV === 'development') {
+      const details: any = {
+        message: error.message || 'Unknown error',
+        name: error.name
+      };
+      
+      if (error.response) {
+        details.resendStatus = error.response.status;
+        details.resendStatusText = error.response.statusText;
+        details.resendData = error.response.data;
+      }
+      
+      if (error.message) {
+        details.message = error.message;
+      }
+      
+      errorMessage = `Email sending failed: ${details.message}${details.resendData ? ` - Resend: ${JSON.stringify(details.resendData)}` : ''}`;
+    }
+    
+    console.error('[API] Final error response:', errorMessage);
     return res.status(500).json({ error: errorMessage });
   }
 }

@@ -316,7 +316,16 @@ export default async function handler(req: any, res: any) {
       </div>
     `;
 
-    for (const adminEmail of adminEmails) {
+    // Send admin emails with delay to avoid rate limiting (Resend allows 2 requests per second)
+    for (let i = 0; i < adminEmails.length; i++) {
+      const adminEmail = adminEmails[i];
+      
+      // Add delay between admin emails (500ms = 0.5 seconds between requests)
+      if (i > 0) {
+        console.log('[API] Waiting 500ms before sending next admin email to avoid rate limit...');
+        await new Promise(resolve => setTimeout(resolve, 500));
+      }
+      
       console.log('[API] Sending notification email to admin:', adminEmail);
       try {
         console.log('[API] Attempting to send admin email with params:', {
@@ -325,21 +334,51 @@ export default async function handler(req: any, res: any) {
           subject: `${sanitizedBookingData.subject || 'New Booking Request'} - ${sanitizedBookingData.name}`
         });
         
-        const adminEmailResult = await resend.emails.send({
+        let adminEmailResult;
+        let retryCount = 0;
+        const maxRetries = 2;
+        
+        // Retry logic for rate limit errors
+        while (retryCount <= maxRetries) {
+          try {
+            adminEmailResult = await resend.emails.send({
           from: fromEmail,
         to: adminEmail,
-          subject: `${sanitizedBookingData.subject || 'New Booking Request'} - ${sanitizedBookingData.name}`,
-        html: `
-          <html>
-            <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
-              <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
-                <h2 style="color: #fbbf24;">${sanitizedBookingData.greeting || 'New Booking Request'}</h2>
-                ${bookingDetailsHtml}
-              </div>
-            </body>
-          </html>
-        `,
-        });
+              subject: `${sanitizedBookingData.subject || 'New Booking Request'} - ${sanitizedBookingData.name}`,
+            html: `
+              <html>
+                <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+                  <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
+                    <h2 style="color: #fbbf24;">${sanitizedBookingData.greeting || 'New Booking Request'}</h2>
+                    ${bookingDetailsHtml}
+                  </div>
+                </body>
+              </html>
+            `,
+            });
+            
+            // If we got here, the request succeeded - break out of retry loop
+            break;
+          } catch (rateLimitError: any) {
+            // Check if it's a rate limit error
+            const isRateLimit = rateLimitError?.response?.status === 429 || 
+                              rateLimitError?.error?.statusCode === 429 ||
+                              (adminEmailResult?.error?.statusCode === 429);
+            
+            if (isRateLimit && retryCount < maxRetries) {
+              retryCount++;
+              const retryAfter = parseInt(rateLimitError?.response?.headers?.['retry-after'] || 
+                                         adminEmailResult?.headers?.['retry-after'] || '1');
+              const delayMs = (retryAfter + 0.5) * 1000; // Add 0.5s buffer
+              console.warn(`[API] Rate limit hit for admin email to ${adminEmail}. Retrying after ${retryAfter}s (attempt ${retryCount}/${maxRetries})...`);
+              await new Promise(resolve => setTimeout(resolve, delayMs));
+              continue; // Retry
+            } else {
+              // Not a rate limit error or max retries reached - throw the error
+              throw rateLimitError;
+            }
+          }
+        }
         
         console.log('[API] Admin email Resend response type:', typeof adminEmailResult);
         console.log('[API] Admin email Resend response:', JSON.stringify(adminEmailResult, null, 2));

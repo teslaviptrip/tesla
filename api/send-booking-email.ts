@@ -212,6 +212,12 @@ export default async function handler(req: any, res: any) {
     
     let customerEmailResult;
     try {
+      console.log('[API] Attempting to send customer email with params:', {
+        from: fromEmail,
+        to: sanitizedCustomerEmail,
+        subject: confirmationEmail?.subject || 'Booking Confirmation'
+      });
+      
       customerEmailResult = await resend.emails.send({
         from: fromEmail,
         to: sanitizedCustomerEmail,
@@ -241,11 +247,25 @@ export default async function handler(req: any, res: any) {
       `,
     });
       
+      console.log('[API] Customer email Resend response type:', typeof customerEmailResult);
       console.log('[API] Customer email Resend response:', JSON.stringify(customerEmailResult, null, 2));
+      console.log('[API] Customer email Resend response keys:', customerEmailResult ? Object.keys(customerEmailResult) : 'null/undefined');
+      
+      // Check if response has error structure
+      if (customerEmailResult && 'error' in customerEmailResult) {
+        console.error('[API] Resend returned error in response:', customerEmailResult.error);
+        throw new Error(`Resend API error: ${JSON.stringify(customerEmailResult.error)}`);
+      }
       
       if (!customerEmailResult || !customerEmailResult.id) {
-        console.error('[API] Customer email response missing ID:', customerEmailResult);
-        throw new Error('Resend API returned invalid response - missing email ID');
+        console.error('[API] Customer email response missing ID. Full response:', customerEmailResult);
+        console.error('[API] Response structure:', {
+          hasResult: !!customerEmailResult,
+          isObject: typeof customerEmailResult === 'object',
+          keys: customerEmailResult ? Object.keys(customerEmailResult) : [],
+          value: customerEmailResult
+        });
+        throw new Error(`Resend API returned invalid response - missing email ID. Response: ${JSON.stringify(customerEmailResult)}`);
       }
       
       console.log('[API] Customer email sent successfully:', {
